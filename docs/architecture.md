@@ -23,7 +23,8 @@ Frontend visual decisions live in `.trellis/spec/frontend/visual-design.md` and 
 │   ├── app/                    # application lifecycle and dependency wiring
 │   ├── config/                 # environment/config decoding
 │   ├── httpapi/                # transport concerns: middleware, response, routing
-│   ├── platform/               # replaceable technical adapters (clock, logging, storage)
+│   ├── platform/               # replaceable technical adapters (clock, logging, database, storage)
+│   │   └── database/           # one shared SQLite instance and migration coordinator
 │   ├── features/               # independent backend vertical slices
 │   │   └── <feature>/          # handler, service, domain, repository as needed
 │   └── web/                    # Go embed adapter and generated static assets
@@ -86,6 +87,7 @@ Start with the smallest shape. Do not add a repository, global store, service la
 HTTP handler → feature service/use case → feature domain
                                └──────→ feature adapter (repository/gateway)
 frontend page → feature UI/domain → feature API client
+feature repository → shared platform database instance
 ```
 
 Feature code may depend on `httpapi`, `platform` or `shared` interfaces, but one feature must not import another feature's implementation. Cross-feature communication goes through a deliberately small app-level interface or a URL/API contract. Keep transport DTOs at the transport seam; do not expose database rows to React.
@@ -102,7 +104,7 @@ For a small feature, define the request/response types next to the feature API c
 
 ## 6. Persistence and SQLite
 
-SQLite is the default and only supported database for the initial project. Use Go's `database/sql` behind a feature-owned repository interface; do not expose the database handle or rows outside the adapter. Runtime database location is always `<FLIGHT_DATA_DIR>/flight.sqlite3`, while migration SQL remains versioned source code under the owning feature's `migrations/` directory.
+SQLite is the default and only supported database for the initial project. The platform/application composition layer opens one shared Go `*sql.DB` instance at `<FLIGHT_DATA_DIR>/flight.sqlite3` and injects it into feature-owned repositories. Features own their tables and SQL, but never open or close their own SQLite connection. Migration SQL remains source code under the owning feature's `migrations/` directory and is applied by one application-level coordinator.
 
 Each feature may add a subdirectory under the data root for files that belong to it. The feature must document its path, creation policy and cleanup/backup semantics. A feature must not create a second data root. Schema migrations are applied explicitly during startup or an administrative command, and the process must report a clear error when the volume is unavailable.
 

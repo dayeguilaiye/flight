@@ -29,6 +29,7 @@ internal/
 ├── config/               # config decoding and validation
 ├── httpapi/              # router, middleware, response helpers
 ├── platform/             # logging, clock, storage adapters
+│   └── database/          # shared SQLite instance and migration coordinator
 ├── features/<feature>/   # handler/service/domain/repository as needed
 └── web/                  # frontend embed adapter + generated dist
 data/                     # runtime writable root, never Go source
@@ -40,7 +41,7 @@ data/                     # runtime writable root, never Go source
 
 <!-- How should new features/modules be organized? -->
 
-Create only the files a feature needs. Keep pure domain calculations free of HTTP, SQL and global state. Put an interface at the feature seam when an adapter varies or a test double is useful; keep the concrete adapter beside that feature. Runtime persistence does not live under `internal/` or beside the binary: all application-owned writable files go under the configured `FLIGHT_DATA_DIR` root.
+Create only the files a feature needs. Keep pure domain calculations free of HTTP, SQL and global state. Put an interface at the feature seam when an adapter varies or a test double is useful; keep the concrete adapter beside that feature. Feature repositories receive the shared database instance from the composition root and never open/close SQLite themselves. Runtime persistence does not live under `internal/` or beside the binary: all application-owned writable files go under the configured `FLIGHT_DATA_DIR` root.
 
 ---
 
