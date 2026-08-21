@@ -236,7 +236,38 @@ func validCapabilityResponse(kind llm.CapabilityType, model string, response any
 		serialized, _ := json.Marshal(response)
 		return bytes.Contains(serialized, []byte("get_weather")) || bytes.Contains(serialized, []byte("tool_call")) || bytes.Contains(serialized, []byte("tool_use"))
 	}
+	if kind == llm.CapabilityReasoning {
+		serialized, _ := json.Marshal(response)
+		return bytes.Contains(serialized, []byte("reasoning")) || bytes.Contains(serialized, []byte("thinking"))
+	}
+	if kind == llm.CapabilityStructuredOutput {
+		return hasStructuredAnswer(response)
+	}
 	return response != nil
+}
+
+func hasStructuredAnswer(value any) bool {
+	switch typed := value.(type) {
+	case map[string]any:
+		if _, ok := typed["answer"]; ok {
+			return true
+		}
+		for _, child := range typed {
+			if hasStructuredAnswer(child) {
+				return true
+			}
+		}
+	case []any:
+		for _, child := range typed {
+			if hasStructuredAnswer(child) {
+				return true
+			}
+		}
+	case string:
+		var decoded any
+		return json.Unmarshal([]byte(typed), &decoded) == nil && hasStructuredAnswer(decoded)
+	}
+	return false
 }
 
 func safeEndpoint(raw string) string {

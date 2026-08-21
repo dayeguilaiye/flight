@@ -60,3 +60,18 @@ func TestOpenAIChatStreamEmitsProgressAndRedactsToken(t *testing.T) {
 		t.Fatal("token leaked into result")
 	}
 }
+
+func TestCapabilityValidationRequiresObservableBehavior(t *testing.T) {
+	if validCapabilityResponse(llm.CapabilityReasoning, "model", map[string]any{"choices": []any{map[string]any{"message": map[string]any{"content": "17 × 19 = 323"}}}}) {
+		t.Fatal("plain answer was accepted as reasoning")
+	}
+	if !validCapabilityResponse(llm.CapabilityReasoning, "model", map[string]any{"output": []any{map[string]any{"type": "reasoning"}}}) {
+		t.Fatal("reasoning output was rejected")
+	}
+	if validCapabilityResponse(llm.CapabilityStructuredOutput, "model", map[string]any{"content": "answer: forty-two"}) {
+		t.Fatal("non-structured answer was accepted")
+	}
+	if !validCapabilityResponse(llm.CapabilityStructuredOutput, "model", map[string]any{"content": `{"answer":42}`}) {
+		t.Fatal("structured answer was rejected")
+	}
+}
