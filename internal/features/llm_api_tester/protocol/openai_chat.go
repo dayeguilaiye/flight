@@ -31,6 +31,7 @@ func (a *OpenAIChatAdapter) buildRequest(request llm.CapabilityRequest, fixture 
 	body := map[string]any{"model": request.ModelName, "messages": []any{map[string]any{"role": "user", "content": fixture.Prompt}}}
 	if stream {
 		body["stream"] = true
+		body["stream_options"] = map[string]any{"include_usage": true}
 	}
 	if fixture.ToolSchema != nil {
 		body["tools"] = []any{fixture.ToolSchema}

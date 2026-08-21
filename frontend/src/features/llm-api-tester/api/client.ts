@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import type { Capability, EphemeralTarget, Provider, TestRunRequest, TestRunResults } from '../types'
+import type { Capability, CapabilityResult, EphemeralTarget, Provider, TestRunRequest, TestRunResults } from '../types'
 
 const resultSchema = z.object({
   status: z.enum(['never_run', 'passed', 'failed', 'unsupported', 'not_run']),
@@ -67,6 +67,10 @@ export async function createProvider(input: { name: string; description: string;
   return providerSchema.parse(await requestJSON('/api/v1/llm-api-tester/providers', { method: 'POST', body: JSON.stringify(input) }, providerSchema))
 }
 
+export async function updateProvider(id: number, input: { name: string; description: string; baseUrl: string; token?: string }): Promise<Provider> {
+  return providerSchema.parse(await requestJSON(`/api/v1/llm-api-tester/providers/${id}`, { method: 'PATCH', body: JSON.stringify(input) }, providerSchema))
+}
+
 export async function deleteProvider(id: number): Promise<void> {
   const response = await fetch(`/api/v1/llm-api-tester/providers/${id}`, { method: 'DELETE' })
   if (!response.ok) throw new Error('Unable to delete provider')
@@ -76,7 +80,63 @@ export async function createModel(providerId: number, input: { name: string; int
   await requestJSON(`/api/v1/llm-api-tester/providers/${providerId}/models`, { method: 'POST', body: JSON.stringify(input) }, modelSchema)
 }
 
+export async function updateModel(id: number, input: { name: string; interfaceType: string; maxConcurrency?: number }): Promise<void> {
+  await requestJSON(`/api/v1/llm-api-tester/models/${id}`, { method: 'PATCH', body: JSON.stringify(input) }, modelSchema)
+}
+
+export async function deleteModel(id: number): Promise<void> {
+  const response = await fetch(`/api/v1/llm-api-tester/models/${id}`, { method: 'DELETE' })
+  if (!response.ok) throw new Error('Unable to delete model')
+}
+
 export async function runCapabilities(target: { modelId: number } | EphemeralTarget, selected: Capability[]): Promise<TestRunResults> {
   const body: TestRunRequest = { targets: [target], capabilities: selected }
   return runSchema.parse(await requestJSON('/api/v1/llm-api-tester/test-runs', { method: 'POST', body: JSON.stringify(body) }, runSchema)).results as TestRunResults
+}
+
+export async function runCapabilitiesStream(
+  target: { modelId: number } | EphemeralTarget,
+  selected: Capability[],
+  onResult: (modelRef: string, capability: Capability, result: CapabilityResult) => void,
+): Promise<TestRunResults> {
+  const body: TestRunRequest = { targets: [target], capabilities: selected }
+  const response = await fetch('/api/v1/llm-api-tester/test-runs', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'text/event-stream' },
+    body: JSON.stringify(body),
+  })
+  if (!response.ok || !response.body) {
+    const payload: unknown = await response.json().catch(() => undefined)
+    const message = typeof payload === 'object' && payload !== null && 'error' in payload
+      ? String((payload as { error?: { message?: unknown } }).error?.message ?? 'Request failed')
+      : 'Request failed'
+    throw new Error(message)
+  }
+  const reader = response.body.getReader()
+  const decoder = new TextDecoder()
+  let buffer = ''
+  let complete: TestRunResults | undefined
+  const consume = (frame: string) => {
+    const data = frame.split('\n').filter((line) => line.startsWith('data:')).map((line) => line.slice(5).trim()).join('\n')
+    if (!data) return
+    const payload: unknown = JSON.parse(data)
+    if (typeof payload !== 'object' || payload === null) return
+    const event = payload as { kind?: string; modelRef?: string; capability?: Capability; result?: CapabilityResult; results?: TestRunResults; error?: string }
+    if (event.kind === 'result' && event.modelRef && event.capability && event.result) onResult(event.modelRef, event.capability, event.result)
+    if (event.kind === 'complete' && event.results) complete = runSchema.parse({ results: event.results }).results as TestRunResults
+    if (event.kind === 'error') throw new Error(event.error ?? 'Test run failed')
+  }
+  while (true) {
+    const { value, done } = await reader.read()
+    buffer += decoder.decode(value ?? new Uint8Array(), { stream: !done })
+    let boundary = buffer.indexOf('\n\n')
+    while (boundary >= 0) {
+      consume(buffer.slice(0, boundary))
+      buffer = buffer.slice(boundary + 2)
+      boundary = buffer.indexOf('\n\n')
+    }
+    if (done) break
+  }
+  if (buffer.trim()) consume(buffer)
+  return complete ?? {}
 }

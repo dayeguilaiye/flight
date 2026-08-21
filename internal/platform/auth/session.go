@@ -42,6 +42,12 @@ func (s *SessionManager) CheckPassword(password string) bool {
 
 // SetOwnerCookie establishes an authenticated owner session.
 func (s *SessionManager) SetOwnerCookie(w http.ResponseWriter, now time.Time) {
+	s.SetOwnerCookieSecure(w, now, false)
+}
+
+// SetOwnerCookieSecure establishes a session and marks it Secure when the
+// request was served over TLS.
+func (s *SessionManager) SetOwnerCookieSecure(w http.ResponseWriter, now time.Time, secure bool) {
 	expires := now.Add(s.ttl).Unix()
 	payload := "owner." + strconv.FormatInt(expires, 10)
 	signature := s.sign(payload)
@@ -52,7 +58,7 @@ func (s *SessionManager) SetOwnerCookie(w http.ResponseWriter, now time.Time) {
 		Expires:  time.Unix(expires, 0),
 		HttpOnly: true,
 		SameSite: http.SameSiteLaxMode,
-		Secure:   false,
+		Secure:   secure,
 	})
 }
 

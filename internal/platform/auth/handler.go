@@ -63,6 +63,6 @@ func (h *Handler) login(w http.ResponseWriter, r *http.Request) {
 		httpapi.WriteError(w, http.StatusUnauthorized, "invalid_credentials", "The credentials are invalid.")
 		return
 	}
-	h.manager.SetOwnerCookie(w, h.now())
+	h.manager.SetOwnerCookieSecure(w, h.now(), r.TLS != nil)
 	httpapi.WriteJSON(w, http.StatusOK, map[string]bool{"authenticated": true})
 }

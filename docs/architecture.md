@@ -24,7 +24,10 @@ Frontend visual decisions live in `.trellis/spec/frontend/visual-design.md` and 
 │   ├── config/                 # environment/config decoding
 │   ├── httpapi/                # transport concerns: middleware, response, routing
 │   ├── platform/               # replaceable technical adapters (clock, logging, database, storage)
-│   │   └── database/           # one shared SQLite instance and migration coordinator
+│   │   ├── database/           # one shared SQLite instance and migration coordinator
+│   │   ├── auth/               # instance owner session primitives
+│   │   ├── egress/             # outbound URL safety policies
+│   │   └── secrets/            # authenticated encryption primitives
 │   ├── features/               # independent backend vertical slices
 │   │   └── <feature>/          # handler, service, domain, repository as needed
 │   └── web/                    # Go embed adapter and generated static assets

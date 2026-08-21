@@ -53,8 +53,15 @@ export function useLlmApiTester() {
   const addProviderAndModel = async (providerInput: { name: string; description: string; baseUrl: string; token: string }, modelInput: { name: string; interfaceType: string; maxConcurrency?: number }) => {
     setError(undefined)
     if (authenticated) {
-      const provider = await api.createProvider(providerInput)
-      await api.createModel(provider.id, modelInput)
+      if (selectedModelId) {
+        const existingProvider = providers.find((provider) => provider.models.some((model) => model.id === selectedModelId))
+        if (!existingProvider) throw new Error('Selected model is no longer available')
+        await api.updateProvider(existingProvider.id, { ...providerInput, token: providerInput.token || undefined })
+        await api.updateModel(selectedModelId, modelInput)
+      } else {
+        const provider = await api.createProvider(providerInput)
+        await api.createModel(provider.id, modelInput)
+      }
       await refresh()
       return
     }
@@ -67,7 +74,11 @@ export function useLlmApiTester() {
     try {
       const target = authenticated && selectedModelId ? { modelId: selectedModelId } : guest
       if (!target || ('modelId' in target ? !target.modelId : !target.baseUrl || !target.token || !target.modelName)) throw new Error('请先配置一个模型')
-      setResults(await api.runCapabilities(target, selectedCapabilities))
+      setResults({})
+      const finalResults = await api.runCapabilitiesStream(target, selectedCapabilities, (modelRef, capability, result) => {
+        setResults((current) => ({ ...current, [modelRef]: { ...(current[modelRef] ?? {}), [capability]: result } }))
+      })
+      if (Object.keys(finalResults).length > 0) setResults(finalResults)
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : '测试失败')
     } finally {
@@ -76,10 +87,17 @@ export function useLlmApiTester() {
   }
 
   const deleteOwnerProvider = async (id: number) => {
+    const deletingSelectedModel = providers.find((provider) => provider.id === id)?.models.some((model) => model.id === selectedModelId) ?? false
     await api.deleteProvider(id)
     await refresh()
-    if (selectedModelId && !providers.some((provider) => provider.models.some((model) => model.id === selectedModelId))) setSelectedModelId(undefined)
+    if (deletingSelectedModel) setSelectedModelId(undefined)
   }
 
-  return { authenticated, providers, guest, setGuest, selectedModel, selectedModelId, setSelectedModelId, selectedCapabilities, toggleCapability, results, busy, error, login, logout, addProviderAndModel, deleteOwnerProvider, run }
+  const deleteOwnerModel = async (id: number) => {
+    await api.deleteModel(id)
+    await refresh()
+    if (selectedModelId === id) setSelectedModelId(undefined)
+  }
+
+  return { authenticated, providers, guest, setGuest, selectedModel, selectedModelId, setSelectedModelId, selectedCapabilities, toggleCapability, results, busy, error, login, logout, addProviderAndModel, deleteOwnerProvider, deleteOwnerModel, run }
 }

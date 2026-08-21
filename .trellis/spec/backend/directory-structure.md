@@ -29,7 +29,10 @@ internal/
 ├── config/               # config decoding and validation
 ├── httpapi/              # router, middleware, response helpers
 ├── platform/             # logging, clock, storage adapters
-│   └── database/          # shared SQLite instance and migration coordinator
+│   ├── database/          # shared SQLite instance and migration coordinator
+│   ├── auth/              # instance owner session primitives
+│   ├── egress/            # outbound URL safety policies
+│   └── secrets/           # authenticated encryption primitives
 ├── features/<feature>/   # handler/service/domain/repository as needed
 └── web/                  # frontend embed adapter + generated dist
 data/                     # runtime writable root, never Go source

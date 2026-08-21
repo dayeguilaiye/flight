@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 
@@ -39,7 +40,7 @@ func (a *wireAdapter) RunCapability(ctx context.Context, request llm.CapabilityR
 			return llm.CapabilityResult{Status: llm.StatusFailed, Error: map[string]any{"code": "guest_url_blocked", "message": err.Error()}}
 		}
 	}
-	requestSafe := map[string]any{"method": http.MethodPost, "url": endpoint, "body": payload}
+	requestSafe := map[string]any{"method": http.MethodPost, "url": safeEndpoint(endpoint), "body": payload}
 	started := time.Now().UTC()
 	result := llm.CapabilityResult{Status: llm.StatusFailed, Request: requestSafe, StartedAt: &started}
 	body, err := json.Marshal(payload)
@@ -65,6 +66,7 @@ func (a *wireAdapter) RunCapability(ctx context.Context, request llm.CapabilityR
 			}
 			return nil
 		}
+		clone.Transport = egress.GuestTransport(a.client.Transport)
 		client = &clone
 	}
 	response, err := client.Do(httpRequest)
@@ -145,7 +147,7 @@ func (a *wireAdapter) readStream(response *http.Response, result llm.CapabilityR
 	result.DurationMs = &durationMs
 	ttftMs := firstToken.Sub(*result.StartedAt).Milliseconds()
 	result.TTFTMs = &ttftMs
-	return addUsageMetrics(result, lastPayload, duration, completed)
+	return addUsageMetrics(result, lastPayload, completed.Sub(firstToken))
 }
 
 func finishSuccess(result llm.CapabilityResult, payload any) llm.CapabilityResult {
@@ -154,7 +156,7 @@ func finishSuccess(result llm.CapabilityResult, payload any) llm.CapabilityResul
 	duration := completed.Sub(*result.StartedAt)
 	durationMs := duration.Milliseconds()
 	result.DurationMs = &durationMs
-	return addUsageMetrics(result, payload, duration, completed)
+	return addUsageMetrics(result, payload, duration)
 }
 
 func finishFailure(result llm.CapabilityResult, err error) llm.CapabilityResult {
@@ -167,7 +169,7 @@ func finishFailure(result llm.CapabilityResult, err error) llm.CapabilityResult 
 	return result
 }
 
-func addUsageMetrics(result llm.CapabilityResult, payload any, duration time.Duration, completed time.Time) llm.CapabilityResult {
+func addUsageMetrics(result llm.CapabilityResult, payload any, duration time.Duration) llm.CapabilityResult {
 	outputTokens, ok := findInt(payload, "output_tokens", "completion_tokens")
 	if !ok {
 		return result
@@ -178,7 +180,6 @@ func addUsageMetrics(result llm.CapabilityResult, payload any, duration time.Dur
 		throughput := float64(outputTokens) / seconds
 		result.OutputTokensPerSecond = &throughput
 	}
-	_ = completed
 	return result
 }
 
@@ -236,4 +237,15 @@ func validCapabilityResponse(kind llm.CapabilityType, model string, response any
 		return bytes.Contains(serialized, []byte("get_weather")) || bytes.Contains(serialized, []byte("tool_call")) || bytes.Contains(serialized, []byte("tool_use"))
 	}
 	return response != nil
+}
+
+func safeEndpoint(raw string) string {
+	parsed, err := url.Parse(raw)
+	if err != nil {
+		return "[redacted url]"
+	}
+	parsed.RawQuery = ""
+	parsed.Fragment = ""
+	parsed.User = nil
+	return parsed.String()
 }
