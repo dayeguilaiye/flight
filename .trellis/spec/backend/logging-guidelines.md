@@ -1,6 +1,6 @@
 # Logging Guidelines
 
-> How logging is done in this project.
+> Use structured, request-correlated logs with the Go standard `log/slog` package.
 
 ---
 
@@ -16,7 +16,7 @@ Questions to answer:
 - What should NOT be logged (PII, secrets)?
 -->
 
-(To be filled by the team)
+Create one process logger in the composition root and inject it where a module needs logging. Libraries and features must not configure global log output.
 
 ---
 
@@ -24,7 +24,7 @@ Questions to answer:
 
 <!-- When to use each level: debug, info, warn, error -->
 
-(To be filled by the team)
+`DEBUG` is for local diagnostics, `INFO` for lifecycle and meaningful user operations, `WARN` for recoverable degradation, and `ERROR` for failed operations requiring attention. Do not log expected validation failures at error level.
 
 ---
 
@@ -32,7 +32,7 @@ Questions to answer:
 
 <!-- Log format, required fields -->
 
-(To be filled by the team)
+Emit JSON in production and human-readable text locally. Include `request_id`, feature, operation and duration where relevant. Prefer typed attributes over interpolated strings; use `context.Context` to carry request correlation.
 
 ---
 
@@ -40,7 +40,7 @@ Questions to answer:
 
 <!-- Important events to log -->
 
-(To be filled by the team)
+Log server start/stop, migration results, unexpected errors, slow operations and important external adapter failures. Add enough identifiers to investigate without logging payloads wholesale.
 
 ---
 
@@ -48,4 +48,4 @@ Questions to answer:
 
 <!-- Sensitive data, PII, secrets -->
 
-(To be filled by the team)
+Never log passwords, tokens, cookies, authorization headers, full personal data or raw request bodies by default. Redact identifiers and financial values when they are not needed to diagnose the operation.

@@ -1,6 +1,6 @@
 # Database Guidelines
 
-> Database patterns and conventions for this project.
+> Persistence is opt-in and owned by the feature that needs it.
 
 ---
 
@@ -16,7 +16,9 @@ Questions to answer:
 - How do you handle transactions?
 -->
 
-(To be filled by the team)
+SQLite is the project's database. A feature may add tables only when it has a persistence requirement. Use the standard `database/sql` package behind a feature-owned repository interface; an ORM is not allowed as the default. Keep SQL and row mapping inside the concrete repository adapter; services consume domain values, not `sql.Row` or database structs.
+
+The runtime database path is always `<FLIGHT_DATA_DIR>/flight.sqlite3`. `FLIGHT_DATA_DIR` defaults to `./data` for local development and is configurable for containers (for example `/var/lib/flight`). The same root owns all other durable application files, such as uploads or exports, in feature-specific subdirectories so one Docker/Kubernetes volume is sufficient.
 
 ---
 
@@ -24,7 +26,7 @@ Questions to answer:
 
 <!-- How should queries be written? Batch operations? -->
 
-(To be filled by the team)
+Use parameterized queries, explicit column lists and `context.Context` on every query. Transactions belong in the service/repository operation that needs atomicity. Keep reads and writes small and observable; do not hide multiple unrelated queries in a generic data helper.
 
 ---
 
@@ -32,7 +34,7 @@ Questions to answer:
 
 <!-- How to create and run migrations -->
 
-(To be filled by the team)
+Migrations are forward-only, checked into `internal/features/<feature>/migrations/` and applied by an explicit startup/CLI step. A migration must be safe to run once, have a monotonically ordered name such as `0001_create_runs.sql`, and be tested against a clean database. Schema changes and repository changes land together. Migration source files are bundled with the binary or image; the database file remains on the mounted data volume.
 
 ---
 
@@ -40,7 +42,7 @@ Questions to answer:
 
 <!-- Table names, column names, index names -->
 
-(To be filled by the team)
+Tables and columns use `snake_case`; Go fields use `PascalCase`; JSON uses `camelCase`. Use integer minor units for monetary values and UTC timestamps. Names must be feature-scoped to avoid accidental coupling.
 
 ---
 
@@ -48,4 +50,4 @@ Questions to answer:
 
 <!-- Database-related mistakes your team has made -->
 
-(To be filled by the team)
+Never pass a database handle through React, return database rows from handlers, concatenate user input into SQL, write the database into the image/repository, or add a shared repository before two features actually share a persistence concept.

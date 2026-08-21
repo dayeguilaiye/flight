@@ -1,51 +1,19 @@
 # Type Safety
 
-> Type safety patterns in this project.
-
----
-
-## Overview
-
-<!--
-Document your project's type safety conventions here.
-
-Questions to answer:
-- What type system do you use?
-- How are types organized?
-- What validation library do you use?
-- How do you handle type inference?
--->
-
-(To be filled by the team)
-
----
+> TypeScript is strict at compile time and validates unknown data at runtime boundaries.
 
 ## Type Organization
 
-<!-- Where types are defined, shared types vs local types -->
-
-(To be filled by the team)
-
----
+Use strict TypeScript. Feature-local types live beside the feature; `shared/types` is reserved for stable cross-feature contracts. Prefer discriminated unions, named domain types and inferred return types for small pure functions.
 
 ## Validation
 
-<!-- Runtime validation patterns (Zod, Yup, io-ts, etc.) -->
-
-(To be filled by the team)
-
----
+Use Zod (or a similarly explicit schema library) at API, query-string and local-storage boundaries when data is unknown. Parse once, then pass the inferred type inward. Frontend validation is for feedback; the backend remains authoritative.
 
 ## Common Patterns
 
-<!-- Type utilities, generics, type guards -->
-
-(To be filled by the team)
-
----
+Use `unknown` for untrusted values, type guards for narrowing, and branded/opaque types when mixing units such as minor currency values and percentages. Keep JSON DTO types separate from domain display types when transformation is non-trivial.
 
 ## Forbidden Patterns
 
-<!-- any, type assertions, etc. -->
-
-(To be filled by the team)
+Do not use `any`, broad `as` assertions, non-null assertions to silence uncertainty, or duplicate inline casts of the same response field. Fix the boundary decoder or type definition instead.

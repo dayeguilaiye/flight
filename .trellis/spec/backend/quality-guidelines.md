@@ -1,51 +1,23 @@
 # Quality Guidelines
 
-> Code quality standards for backend development.
-
----
-
-## Overview
-
-<!--
-Document your project's quality standards here.
-
-Questions to answer:
-- What patterns are forbidden?
-- What linting rules do you enforce?
-- What are your testing requirements?
-- What code review standards apply?
--->
-
-(To be filled by the team)
-
----
+> Prefer boring, explicit Go code with a small interface and a deep implementation.
 
 ## Forbidden Patterns
 
-<!-- Patterns that should never be used and why -->
-
-(To be filled by the team)
-
----
+- Global mutable state, `panic` in request paths, hidden goroutines and unchecked input.
+- Stringly typed domain states and packages named `utils`, `helpers` or `common`.
+- Abstractions without a real seam, a second adapter or meaningful reuse.
 
 ## Required Patterns
 
-<!-- Patterns that must always be used -->
-
-(To be filled by the team)
-
----
+- Keep handlers thin, make dependencies explicit, propagate `context.Context` and validate at boundaries.
+- Document exported identifiers and test through module interfaces rather than implementation details.
+- Keep `/api/` routing separate from the frontend fallback.
 
 ## Testing Requirements
 
-<!-- What level of testing is expected -->
-
-(To be filled by the team)
-
----
+Every endpoint needs a handler-level test for status and JSON shape. Domain rules and pure calculations need table-driven service/domain tests. Use `gofmt`, `go vet ./...` and race-enabled tests for concurrent code. Add `golangci-lint` when CI is introduced.
 
 ## Code Review Checklist
 
-<!-- What reviewers should check -->
-
-(To be filled by the team)
+Reviewers verify error mapping, logging/redaction, cancellation, feature isolation and focused tests for changed behavior. Before review, run `gofmt`, `go vet ./...`, `go test ./...` and the changed feature's focused tests.

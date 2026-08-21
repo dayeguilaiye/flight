@@ -1,6 +1,6 @@
 # Directory Structure
 
-> How backend code is organized in this project.
+> Backend code is organized as independent vertical feature slices inside a modular monolith.
 
 ---
 
@@ -16,17 +16,22 @@ Questions to answer:
 - How are utilities and helpers organized?
 -->
 
-(To be filled by the team)
+The Go module uses `internal/` by default. `cmd/flight` is the only composition root; feature packages do not construct servers, read process-wide environment variables, or reach into another feature.
 
 ---
 
 ## Directory Layout
 
-```
-<!-- Replace with your actual structure -->
-src/
-├── ...
-└── ...
+```text
+cmd/flight/main.go
+internal/
+├── app/                  # lifecycle and dependency wiring
+├── config/               # config decoding and validation
+├── httpapi/              # router, middleware, response helpers
+├── platform/             # logging, clock, storage adapters
+├── features/<feature>/   # handler/service/domain/repository as needed
+└── web/                  # frontend embed adapter + generated dist
+data/                     # runtime writable root, never Go source
 ```
 
 ---
@@ -35,7 +40,7 @@ src/
 
 <!-- How should new features/modules be organized? -->
 
-(To be filled by the team)
+Create only the files a feature needs. Keep pure domain calculations free of HTTP, SQL and global state. Put an interface at the feature seam when an adapter varies or a test double is useful; keep the concrete adapter beside that feature. Runtime persistence does not live under `internal/` or beside the binary: all application-owned writable files go under the configured `FLIGHT_DATA_DIR` root.
 
 ---
 
@@ -43,7 +48,7 @@ src/
 
 <!-- File and folder naming rules -->
 
-(To be filled by the team)
+Go package names are short, lower-case and singular where practical. Feature slugs and endpoint paths are kebab-case. `*_test.go` stays beside the implementation. Avoid `utils`, `helpers` and catch-all `common` packages; use a domain name or `platform` when ownership is clear.
 
 ---
 
@@ -51,4 +56,4 @@ src/
 
 <!-- Link to well-organized modules as examples -->
 
-(To be filled by the team)
+The reference layout is shown in `docs/architecture.md`. A frontend-only feature has no Go package. A backend feature normally starts with `handler.go`, `service.go` and `domain.go`; add `repository.go` only when I/O exists. SQLite is stored at `<FLIGHT_DATA_DIR>/flight.sqlite3`; feature-owned files use `<FLIGHT_DATA_DIR>/<feature>/...`.

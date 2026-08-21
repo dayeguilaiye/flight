@@ -1,51 +1,19 @@
 # Hook Guidelines
 
-> How hooks are used in this project.
-
----
-
-## Overview
-
-<!--
-Document your project's hook conventions here.
-
-Questions to answer:
-- What custom hooks do you have?
-- How do you handle data fetching?
-- What are the naming conventions?
-- How do you share stateful logic?
--->
-
-(To be filled by the team)
-
----
+> Hooks package stateful React behavior; pure logic remains in ordinary functions.
 
 ## Custom Hook Patterns
 
-<!-- How to create and structure custom hooks -->
-
-(To be filled by the team)
-
----
+Create a custom hook only when stateful behavior or subscription logic is reused. A hook should have one responsibility, stable inputs and a documented return shape. Keep feature hooks in the feature directory; promote to shared only after real cross-feature reuse.
 
 ## Data Fetching
 
-<!-- How data fetching is handled (React Query, SWR, etc.) -->
-
-(To be filled by the team)
-
----
+Use `fetch` through a feature-owned API client. Keep loading, success and error states explicit. Use TanStack Query only once server state needs caching, invalidation or refetch coordination; do not add a global data layer for one request.
 
 ## Naming Conventions
 
-<!-- Hook naming rules (use*, etc.) -->
-
-(To be filled by the team)
-
----
+All custom hooks start with `use` and use camelCase (`useSalaryForm`). Never call hooks conditionally, inside loops or from ordinary utility functions. Prefer `useMemo`/`useCallback` only when a measured identity or computation problem exists.
 
 ## Common Mistakes
 
-<!-- Hook-related mistakes your team has made -->
-
-(To be filled by the team)
+Do not put pure salary/data-analysis math in a hook, suppress exhaustive-deps without an explanation, or return a mutable object whose identity changes unnecessarily.
