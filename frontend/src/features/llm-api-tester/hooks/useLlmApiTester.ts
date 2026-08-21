@@ -13,7 +13,7 @@ export function useLlmApiTester() {
   const [authenticated, setAuthenticated] = useState(false)
   const [providers, setProviders] = useState<Provider[]>([])
   const [guest, setGuest] = useState<EphemeralTarget>(emptyGuest)
-  const [selectedModelId, setSelectedModelId] = useState<number>()
+  const [selectedModelIds, setSelectedModelIds] = useState<number[]>([])
   const [selectedCapabilities, setSelectedCapabilities] = useState<Capability[]>([...capabilities])
   const [results, setResults] = useState<TestRunResults>({})
   const [busy, setBusy] = useState(false)
@@ -31,7 +31,7 @@ export function useLlmApiTester() {
 
   useEffect(() => { void refresh() }, [refresh])
 
-  const selectedModel = useMemo(() => providers.flatMap((provider) => provider.models).find((model) => model.id === selectedModelId), [providers, selectedModelId])
+  const selectedModels = useMemo(() => providers.flatMap((provider) => provider.models).filter((model) => selectedModelIds.includes(model.id)), [providers, selectedModelIds])
 
   const toggleCapability = (capability: Capability) => {
     setSelectedCapabilities((current) => current.includes(capability) ? current.filter((item) => item !== capability) : [...current, capability])
@@ -47,13 +47,14 @@ export function useLlmApiTester() {
     await api.logout()
     setAuthenticated(false)
     setProviders([])
-    setSelectedModelId(undefined)
+    setSelectedModelIds([])
   }
 
   const addProviderAndModel = async (providerInput: { name: string; description: string; baseUrl: string; token: string }, modelInput: { name: string; interfaceType: string; maxConcurrency?: number }) => {
     setError(undefined)
     if (authenticated) {
-      if (selectedModelId) {
+      if (selectedModelIds.length === 1) {
+        const selectedModelId = selectedModelIds[0]
         const existingProvider = providers.find((provider) => provider.models.some((model) => model.id === selectedModelId))
         if (!existingProvider) throw new Error('Selected model is no longer available')
         await api.updateProvider(existingProvider.id, { ...providerInput, token: providerInput.token || undefined })
@@ -72,10 +73,10 @@ export function useLlmApiTester() {
     setBusy(true)
     setError(undefined)
     try {
-      const target = authenticated && selectedModelId ? { modelId: selectedModelId } : guest
-      if (!target || ('modelId' in target ? !target.modelId : !target.baseUrl || !target.token || !target.modelName)) throw new Error('请先配置一个模型')
+      const targets = authenticated && selectedModelIds.length > 0 ? selectedModelIds.map((modelId) => ({ modelId })) : [guest]
+      if (targets.length === 0 || ('modelId' in targets[0] ? !targets[0].modelId : !targets[0].baseUrl || !targets[0].token || !targets[0].modelName)) throw new Error('请先配置一个模型')
       setResults({})
-      const finalResults = await api.runCapabilitiesStream(target, selectedCapabilities, (modelRef, capability, result) => {
+      const finalResults = await api.runCapabilitiesStream(targets, selectedCapabilities, (modelRef, capability, result) => {
         setResults((current) => ({ ...current, [modelRef]: { ...(current[modelRef] ?? {}), [capability]: result } }))
       })
       if (Object.keys(finalResults).length > 0) setResults(finalResults)
@@ -87,17 +88,19 @@ export function useLlmApiTester() {
   }
 
   const deleteOwnerProvider = async (id: number) => {
-    const deletingSelectedModel = providers.find((provider) => provider.id === id)?.models.some((model) => model.id === selectedModelId) ?? false
+    const deletingSelectedModel = providers.find((provider) => provider.id === id)?.models.some((model) => selectedModelIds.includes(model.id)) ?? false
     await api.deleteProvider(id)
     await refresh()
-    if (deletingSelectedModel) setSelectedModelId(undefined)
+    if (deletingSelectedModel) setSelectedModelIds([])
   }
 
   const deleteOwnerModel = async (id: number) => {
     await api.deleteModel(id)
     await refresh()
-    if (selectedModelId === id) setSelectedModelId(undefined)
+    setSelectedModelIds((current) => current.filter((modelId) => modelId !== id))
   }
 
-  return { authenticated, providers, guest, setGuest, selectedModel, selectedModelId, setSelectedModelId, selectedCapabilities, toggleCapability, results, busy, error, login, logout, addProviderAndModel, deleteOwnerProvider, deleteOwnerModel, run }
+  const toggleModel = (id: number) => setSelectedModelIds((current) => current.includes(id) ? current.filter((modelId) => modelId !== id) : [...current, id])
+
+  return { authenticated, providers, guest, setGuest, selectedModels, selectedModelIds, toggleModel, selectedCapabilities, toggleCapability, results, busy, error, login, logout, addProviderAndModel, deleteOwnerProvider, deleteOwnerModel, run }
 }

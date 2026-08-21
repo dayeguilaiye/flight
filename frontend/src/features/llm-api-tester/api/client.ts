@@ -95,11 +95,11 @@ export async function runCapabilities(target: { modelId: number } | EphemeralTar
 }
 
 export async function runCapabilitiesStream(
-  target: { modelId: number } | EphemeralTarget,
+  targets: Array<{ modelId: number } | EphemeralTarget>,
   selected: Capability[],
   onResult: (modelRef: string, capability: Capability, result: CapabilityResult) => void,
 ): Promise<TestRunResults> {
-  const body: TestRunRequest = { targets: [target], capabilities: selected }
+  const body: TestRunRequest = { targets, capabilities: selected }
   const response = await fetch('/api/v1/llm-api-tester/test-runs', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'text/event-stream' },

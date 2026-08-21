@@ -47,7 +47,7 @@ func TestRunHandlerSeparatesGuestAndOwnerData(t *testing.T) {
 	manager := auth.NewSessionManager("password", "master-key-that-is-long-enough")
 	handler := NewRunHandler(service, manager)
 
-	guestBody := `{"targets":[{"baseUrl":"https://api.example.com","token":"guest-token","modelName":"guest-model","interfaceType":"openai_chat"}],"capabilities":["stream"]}`
+	guestBody := `{"targets":[{"baseUrl":"https://api.example.com","token":"guest-token","modelName":"guest-model","interfaceType":"openai_chat"},{"baseUrl":"https://api.example.com","token":"guest-token-2","modelName":"guest-model-2","interfaceType":"openai_chat"}],"capabilities":["stream"]}`
 	guestRequest := httptest.NewRequest(http.MethodPost, "/api/v1/llm-api-tester/test-runs", strings.NewReader(guestBody))
 	guestRequest.Header.Set("Content-Type", "application/json")
 	guestResponse := httptest.NewRecorder()
@@ -61,6 +61,9 @@ func TestRunHandlerSeparatesGuestAndOwnerData(t *testing.T) {
 	}
 	if strings.Contains(guestResponse.Body.String(), "guest-token") {
 		t.Fatal("guest token leaked in response")
+	}
+	if results, ok := guestPayload["results"].(map[string]any); !ok || len(results) != 2 {
+		t.Fatalf("guest multi-target results = %#v", guestPayload["results"])
 	}
 	providers, err := service.ListProviders(ctx)
 	if err != nil {
