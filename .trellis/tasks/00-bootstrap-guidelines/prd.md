@@ -24,6 +24,7 @@ the rest conversationally.
 - [x] Fill backend guidelines
 - [x] Fill frontend guidelines
 - [x] Add architecture and code examples
+- [x] Add project product context and frontend visual/surface-mode guidelines
 
 ---
 

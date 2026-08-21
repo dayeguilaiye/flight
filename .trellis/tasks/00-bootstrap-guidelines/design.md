@@ -24,3 +24,7 @@ All application-owned writable state lives under `FLIGHT_DATA_DIR`. The local de
 ## Trade-offs
 
 This avoids premature monorepo packages, global stores and generic backend layers. The cost is some deliberate duplication of frontend DTO and Go transport types until contract generation is justified. That trade-off keeps each experiment locally understandable and allows the contract to evolve with the feature.
+
+## Frontend design contract
+
+The project uses one quiet utilitarian editorial visual family with mode-specific expression. The executable rules live in `.trellis/spec/frontend/visual-design.md` and `.trellis/spec/frontend/surface-modes.md`, not in a third-party skill's file structure. `operate` surfaces favor clarity and subtle motion; `persuade`, `read` and `experience` surfaces may use richer composition when it serves the content. External design skills are treated as references for anti-patterns and review technique, not as unconditional requirements.

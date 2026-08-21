@@ -15,6 +15,8 @@ This directory contains guidelines for frontend development. Fill in each file w
 | Guide | Description | Status |
 |-------|-------------|--------|
 | [Directory Structure](./directory-structure.md) | Module organization and file layout | Defined |
+| [Visual Design](./visual-design.md) | Shared visual language, tokens, motion and asset rules | Defined |
+| [Surface Modes](./surface-modes.md) | Operate, persuade, read and experience guidance | Defined |
 | [Component Guidelines](./component-guidelines.md) | Component patterns, props, composition | Defined |
 | [Hook Guidelines](./hook-guidelines.md) | Custom hooks, data fetching patterns | Defined |
 | [State Management](./state-management.md) | Local state, global state, server state | Defined |

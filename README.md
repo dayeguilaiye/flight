@@ -12,7 +12,7 @@
 
 项目按“功能纵向切片”组织。薪酬计算器、数据分析、转盘模拟器等功能互相隔离；每个功能可以只有前端，也可以拥有自己的 Go API、业务逻辑和持久化适配器。只有跨至少两个功能、且语义稳定的代码才能进入 shared/platform 层。
 
-完整的目录、接口边界、构建流程和编码规范见 [docs/architecture.md](docs/architecture.md)。AI 开发时使用的可执行规范位于 [.trellis/spec/](.trellis/spec/)。
+完整的产品事实见 [PRODUCT.md](PRODUCT.md)，目录、接口边界和构建流程见 [docs/architecture.md](docs/architecture.md)，AI 开发时使用的可执行规范位于 [.trellis/spec/](.trellis/spec/)。前端视觉基线见 [.trellis/spec/frontend/visual-design.md](.trellis/spec/frontend/visual-design.md)，页面模式见 [.trellis/spec/frontend/surface-modes.md](.trellis/spec/frontend/surface-modes.md)。
 
 ## 本地开发
 

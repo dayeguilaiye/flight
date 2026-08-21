@@ -12,6 +12,8 @@ Flight is a collection of unrelated experiments and tools. The architecture opti
 
 The repository is intentionally a modular monolith, not a microservice system. A feature is a vertical slice; `shared` and `platform` are supporting modules, not dumping grounds.
 
+Frontend visual decisions live in `.trellis/spec/frontend/visual-design.md` and `.trellis/spec/frontend/surface-modes.md`. A feature task may choose a mode and local accent, but it must inherit the project tokens and accessibility rules.
+
 ## 2. Repository layout
 
 ```text
@@ -34,6 +36,7 @@ The repository is intentionally a modular monolith, not a microservice system. A
 ├── scripts/                    # repeatable dev/build/check entry points
 ├── data/                        # runtime writable root; ignored by Git and mountable as one volume
 ├── docs/                       # human-facing architecture and decisions
+├── PRODUCT.md                  # product facts used by design and planning tools
 ├── go.mod
 └── pnpm-workspace.yaml         # only if more frontend packages are added later
 ```
