@@ -108,6 +108,7 @@ type storedProvider struct {
 
 type storedModel struct {
 	Model
+	ProviderBaseURL         string
 	ProviderTokenCiphertext []byte
 	ProviderTokenNonce      []byte
 }

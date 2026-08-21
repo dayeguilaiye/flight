@@ -146,6 +146,37 @@ func (r *sqliteRepository) DeleteModel(ctx context.Context, id int64) error {
 	return nil
 }
 
+func (r *sqliteRepository) GetModel(ctx context.Context, id int64) (storedModel, error) {
+	var model storedModel
+	var interfaceType, createdAt, updatedAt string
+	if err := r.db.QueryRowContext(ctx, `
+		SELECT m.id, m.provider_id, m.name, m.interface_type, m.max_concurrency, m.created_at, m.updated_at,
+		       p.base_url, p.token_ciphertext, p.token_nonce
+		FROM models m JOIN providers p ON p.id = m.provider_id
+		WHERE m.id = ?
+	`, id).Scan(&model.ID, &model.ProviderID, &model.Name, &interfaceType, &model.MaxConcurrency, &createdAt, &updatedAt, &model.ProviderBaseURL, &model.ProviderTokenCiphertext, &model.ProviderTokenNonce); err != nil {
+		if err == sql.ErrNoRows {
+			return storedModel{}, err
+		}
+		return storedModel{}, fmt.Errorf("get model: %w", err)
+	}
+	model.InterfaceType = InterfaceType(interfaceType)
+	var err error
+	model.CreatedAt, err = parseTime(createdAt)
+	if err != nil {
+		return storedModel{}, err
+	}
+	model.UpdatedAt, err = parseTime(updatedAt)
+	if err != nil {
+		return storedModel{}, err
+	}
+	model.Results, err = r.resultsForModel(ctx, id)
+	if err != nil {
+		return storedModel{}, err
+	}
+	return model, nil
+}
+
 func (r *sqliteRepository) UpsertCapabilityResult(ctx context.Context, modelID int64, capability CapabilityType, result CapabilityResult) error {
 	requestJSON, err := marshalNullable(result.Request)
 	if err != nil {

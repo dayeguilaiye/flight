@@ -9,6 +9,7 @@ import (
 
 	"github.com/ziyuanhe/flight/internal/config"
 	llm "github.com/ziyuanhe/flight/internal/features/llm_api_tester"
+	"github.com/ziyuanhe/flight/internal/features/llm_api_tester/protocol"
 	"github.com/ziyuanhe/flight/internal/httpapi"
 	"github.com/ziyuanhe/flight/internal/platform/auth"
 	"github.com/ziyuanhe/flight/internal/platform/database"
@@ -42,10 +43,13 @@ func New(ctx context.Context, cfg config.Config, logger *slog.Logger) (*App, err
 	ownerAuth := auth.NewSessionManager(cfg.AdminPassword, cfg.MasterKey)
 	featureRepository := llm.NewSQLiteRepository(db)
 	featureService := llm.NewService(featureRepository, box)
+	featureService.SetAdapters(protocol.NewRegistry())
 	featureHandler := llm.NewHandler(featureService, ownerAuth)
+	runHandler := llm.NewRunHandler(featureService, ownerAuth)
 	authHandler := auth.NewHandler(ownerAuth)
 	apiMux := http.NewServeMux()
 	apiMux.Handle("/api/v1/auth/", authHandler)
+	apiMux.Handle("/api/v1/llm-api-tester/test-runs", runHandler)
 	apiMux.Handle("/api/v1/llm-api-tester/", featureHandler)
 
 	if logger == nil {

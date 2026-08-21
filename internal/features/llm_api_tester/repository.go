@@ -12,5 +12,6 @@ type Repository interface {
 	CreateModel(context.Context, storedModel) (storedModel, error)
 	UpdateModel(context.Context, storedModel) (storedModel, error)
 	DeleteModel(context.Context, int64) error
+	GetModel(context.Context, int64) (storedModel, error)
 	UpsertCapabilityResult(context.Context, int64, CapabilityType, CapabilityResult) error
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"hash/fnv"
 	"strings"
 
 	"github.com/ziyuanhe/flight/internal/platform/secrets"
@@ -27,16 +28,32 @@ type ModelInput struct {
 	MaxConcurrency *int
 }
 
+// EphemeralTarget is a visitor-owned model configuration that exists only for
+// the current test request.
+type EphemeralTarget struct {
+	BaseURL        string
+	Token          string
+	ModelName      string
+	InterfaceType  InterfaceType
+	MaxConcurrency *int
+}
+
 // Service contains feature use cases and owns token encryption boundaries.
 type Service struct {
 	repository Repository
 	box        *secrets.Box
+	adapters   AdapterRegistry
+	scheduler  *modelScheduler
 }
 
 // NewService creates the owner CRUD service.
 func NewService(repository Repository, box *secrets.Box) *Service {
-	return &Service{repository: repository, box: box}
+	return &Service{repository: repository, box: box, scheduler: newModelScheduler()}
 }
+
+// SetAdapters wires protocol implementations at the application composition
+// root without making the feature depend on a concrete protocol package.
+func (s *Service) SetAdapters(adapters AdapterRegistry) { s.adapters = adapters }
 
 // ListProviders returns safe provider/model views with sparse latest results.
 func (s *Service) ListProviders(ctx context.Context) ([]Provider, error) {
@@ -122,6 +139,69 @@ func (s *Service) UpdateModel(ctx context.Context, id int64, input ModelInput) (
 // DeleteModel removes a model and its latest capability results.
 func (s *Service) DeleteModel(ctx context.Context, id int64) error {
 	return s.repository.DeleteModel(ctx, id)
+}
+
+// RunPersistedCapabilities runs selected checks for one owner model. Each
+// capability is persisted independently, so a partial run is sparse.
+func (s *Service) RunPersistedCapabilities(ctx context.Context, modelID int64, capabilities []CapabilityType, sink func(CapabilityType, TestEvent)) (map[CapabilityType]CapabilityResult, error) {
+	model, err := s.repository.GetModel(ctx, modelID)
+	if err != nil {
+		return nil, err
+	}
+	token, err := s.box.Decrypt(model.ProviderTokenNonce, model.ProviderTokenCiphertext)
+	if err != nil {
+		return nil, fmt.Errorf("decrypt provider token: %w", err)
+	}
+	return s.runCapabilities(ctx, modelID, model.ProviderBaseURL, model.Model, token, capabilities, true, sink)
+}
+
+// RunEphemeralCapabilities executes a visitor target without repository access
+// or durable writes.
+func (s *Service) RunEphemeralCapabilities(ctx context.Context, target EphemeralTarget, capabilities []CapabilityType, sink func(CapabilityType, TestEvent)) (map[CapabilityType]CapabilityResult, error) {
+	if err := validateProvider("ephemeral", "", target.BaseURL, target.Token, true); err != nil {
+		return nil, err
+	}
+	if err := validateModel(target.ModelName, target.InterfaceType, target.MaxConcurrency); err != nil {
+		return nil, err
+	}
+	model := Model{Name: target.ModelName, InterfaceType: target.InterfaceType, MaxConcurrency: target.MaxConcurrency}
+	return s.runCapabilities(ctx, ephemeralSchedulerKey(target), target.BaseURL, model, target.Token, capabilities, false, sink)
+}
+
+func (s *Service) runCapabilities(ctx context.Context, modelID int64, baseURL string, model Model, token string, capabilities []CapabilityType, persist bool, sink func(CapabilityType, TestEvent)) (map[CapabilityType]CapabilityResult, error) {
+	if s.adapters == nil {
+		return nil, errors.New("test adapters are not configured")
+	}
+	adapter, ok := s.adapters.Adapter(model.InterfaceType)
+	if !ok {
+		return nil, fmt.Errorf("no adapter for interface %q", model.InterfaceType)
+	}
+	release, acquired := s.scheduler.Acquire(ctx, modelID, model.MaxConcurrency)
+	if !acquired {
+		return nil, ctx.Err()
+	}
+	defer release()
+	results := make(map[CapabilityType]CapabilityResult, len(capabilities))
+	for _, capability := range capabilities {
+		result := adapter.RunCapability(ctx, CapabilityRequest{Capability: capability, BaseURL: baseURL, Token: token, ModelName: model.Name, InterfaceType: model.InterfaceType}, func(event TestEvent) {
+			if sink != nil {
+				sink(capability, event)
+			}
+		})
+		results[capability] = result
+		if persist {
+			if err := s.repository.UpsertCapabilityResult(ctx, modelID, capability, result); err != nil {
+				return nil, err
+			}
+		}
+	}
+	return results, nil
+}
+
+func ephemeralSchedulerKey(target EphemeralTarget) int64 {
+	hash := fnv.New64a()
+	_, _ = hash.Write([]byte(target.BaseURL + "\x00" + target.ModelName + "\x00" + string(target.InterfaceType)))
+	return -int64(hash.Sum64() & 0x7fffffffffffffff)
 }
 
 func publicProvider(provider storedProvider) Provider {
