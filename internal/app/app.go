@@ -8,8 +8,11 @@ import (
 	"time"
 
 	"github.com/ziyuanhe/flight/internal/config"
+	llm "github.com/ziyuanhe/flight/internal/features/llm_api_tester"
 	"github.com/ziyuanhe/flight/internal/httpapi"
+	"github.com/ziyuanhe/flight/internal/platform/auth"
 	"github.com/ziyuanhe/flight/internal/platform/database"
+	"github.com/ziyuanhe/flight/internal/platform/secrets"
 	"github.com/ziyuanhe/flight/internal/web"
 )
 
@@ -27,15 +30,28 @@ func New(ctx context.Context, cfg config.Config, logger *slog.Logger) (*App, err
 	if err != nil {
 		return nil, err
 	}
-	if err := database.ApplyMigrations(ctx, db, nil); err != nil {
+	if err := database.ApplyMigrations(ctx, db, llm.Migrations()); err != nil {
 		_ = db.Close()
 		return nil, fmt.Errorf("apply migrations: %w", err)
 	}
+	box, err := secrets.NewBox(cfg.MasterKey)
+	if err != nil {
+		_ = db.Close()
+		return nil, fmt.Errorf("initialize secret storage: %w", err)
+	}
+	ownerAuth := auth.NewSessionManager(cfg.AdminPassword, cfg.MasterKey)
+	featureRepository := llm.NewSQLiteRepository(db)
+	featureService := llm.NewService(featureRepository, box)
+	featureHandler := llm.NewHandler(featureService, ownerAuth)
+	authHandler := auth.NewHandler(ownerAuth)
+	apiMux := http.NewServeMux()
+	apiMux.Handle("/api/v1/auth/", authHandler)
+	apiMux.Handle("/api/v1/llm-api-tester/", featureHandler)
 
 	if logger == nil {
 		logger = slog.Default()
 	}
-	handler := httpapi.NewServer(web.Handler())
+	handler := httpapi.NewServer(apiMux, web.Handler())
 	return &App{
 		config: cfg,
 		db:     db,
