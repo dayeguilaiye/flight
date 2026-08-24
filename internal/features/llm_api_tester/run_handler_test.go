@@ -109,3 +109,45 @@ func TestRunHandlerSeparatesGuestAndOwnerData(t *testing.T) {
 		t.Fatalf("unauthorized status = %d", unauthorized.Code)
 	}
 }
+
+func TestRunHandlerReturnsStructuredValidationError(t *testing.T) {
+	box, _ := secrets.NewBox("master-key-that-is-long-enough")
+	manager := auth.NewSessionManager("password", "master-key-that-is-long-enough")
+	handler := NewRunHandler(NewService(nil, box), manager)
+	request := httptest.NewRequest(http.MethodPost, "/api/v1/llm-api-tester/test-runs", strings.NewReader(`{"targets":[],"capabilities":["stream"]}`))
+	response := httptest.NewRecorder()
+
+	handler.ServeHTTP(response, request)
+
+	var payload struct {
+		Error struct {
+			Code  string `json:"code"`
+			Field string `json:"field"`
+		} `json:"error"`
+	}
+	if err := json.Unmarshal(response.Body.Bytes(), &payload); err != nil {
+		t.Fatal(err)
+	}
+	if response.Code != http.StatusBadRequest || payload.Error.Code != "test_target_required" || payload.Error.Field != "targets" {
+		t.Fatalf("response = status %d payload %#v", response.Code, payload)
+	}
+}
+
+func TestRunHandlerSSEUsesStructuredPublicError(t *testing.T) {
+	box, _ := secrets.NewBox("master-key-that-is-long-enough")
+	manager := auth.NewSessionManager("password", "master-key-that-is-long-enough")
+	handler := NewRunHandler(NewService(nil, box), manager)
+	request := httptest.NewRequest(http.MethodPost, "/api/v1/llm-api-tester/test-runs", strings.NewReader(`{"targets":[{"baseUrl":"https://api.example.com","token":"token","modelName":"model","interfaceType":"openai_chat"}],"capabilities":["stream"]}`))
+	request.Header.Set("Accept", "text/event-stream")
+	response := httptest.NewRecorder()
+
+	handler.ServeHTTP(response, request)
+
+	body := response.Body.String()
+	if !strings.Contains(body, `"kind":"error"`) || !strings.Contains(body, `"error":{"code":"test_run_failed"`) {
+		t.Fatalf("SSE body does not contain a structured public error: %s", body)
+	}
+	if strings.Contains(body, "test adapters are not configured") {
+		t.Fatalf("SSE leaked internal error: %s", body)
+	}
+}

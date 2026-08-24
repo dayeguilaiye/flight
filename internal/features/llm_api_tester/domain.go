@@ -8,6 +8,15 @@ import (
 	"time"
 )
 
+var (
+	errProviderNameRequired     = errors.New("provider name is required")
+	errProviderBaseURLInvalid   = errors.New("provider base URL must be an absolute HTTP or HTTPS URL")
+	errProviderTokenRequired    = errors.New("provider token is required")
+	errModelNameRequired        = errors.New("model name is required")
+	errInterfaceTypeUnsupported = errors.New("interface type is unsupported")
+	errMaxConcurrencyInvalid    = errors.New("max concurrency must be at least 1")
+)
+
 // InterfaceType identifies the wire protocol used by a model endpoint.
 type InterfaceType string
 
@@ -115,14 +124,14 @@ type storedModel struct {
 
 func validateProvider(name, description, baseURL, token string, tokenRequired bool) error {
 	if strings.TrimSpace(name) == "" {
-		return errors.New("provider name is required")
+		return errProviderNameRequired
 	}
 	parsed, err := url.Parse(strings.TrimSpace(baseURL))
 	if err != nil || parsed.Scheme == "" || parsed.Host == "" || (parsed.Scheme != "http" && parsed.Scheme != "https") {
-		return errors.New("provider base URL must be an absolute HTTP or HTTPS URL")
+		return errProviderBaseURLInvalid
 	}
 	if tokenRequired && strings.TrimSpace(token) == "" {
-		return errors.New("provider token is required")
+		return errProviderTokenRequired
 	}
 	_ = description
 	return nil
@@ -130,13 +139,13 @@ func validateProvider(name, description, baseURL, token string, tokenRequired bo
 
 func validateModel(name string, interfaceType InterfaceType, maxConcurrency *int) error {
 	if strings.TrimSpace(name) == "" {
-		return errors.New("model name is required")
+		return errModelNameRequired
 	}
 	if !interfaceType.Valid() {
-		return fmt.Errorf("unsupported interface type %q", interfaceType)
+		return fmt.Errorf("%w: %q", errInterfaceTypeUnsupported, interfaceType)
 	}
 	if maxConcurrency != nil && *maxConcurrency < 1 {
-		return errors.New("max concurrency must be at least 1")
+		return errMaxConcurrencyInvalid
 	}
 	return nil
 }

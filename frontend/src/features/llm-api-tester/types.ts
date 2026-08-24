@@ -48,4 +48,4 @@ export interface TestRunRequest {
   capabilities: Capability[]
 }
 
-export type TestRunResults = Record<string, Record<Capability, CapabilityResult>>
+export type TestRunResults = Record<string, Partial<Record<Capability, CapabilityResult>>>

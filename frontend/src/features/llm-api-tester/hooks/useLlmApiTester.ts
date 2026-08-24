@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { ApiError, toDisplayError, type DisplayError } from '../../../shared/api/errors'
 import * as api from '../api/client'
 import { capabilities, type Capability, type EphemeralTarget, type Provider, type TestRunResults } from '../types'
 
@@ -17,7 +18,7 @@ export function useLlmApiTester() {
   const [selectedCapabilities, setSelectedCapabilities] = useState<Capability[]>([...capabilities])
   const [results, setResults] = useState<TestRunResults>({})
   const [busy, setBusy] = useState(false)
-  const [error, setError] = useState<string>()
+  const [error, setError] = useState<DisplayError>()
 
   const refresh = useCallback(async () => {
     try {
@@ -25,7 +26,7 @@ export function useLlmApiTester() {
       setAuthenticated(owner)
       if (owner) setProviders(await api.listProviders())
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Unable to load workspace')
+      setError(toDisplayError(cause, 'unable_to_load_workspace'))
     }
   }, [])
 
@@ -56,7 +57,7 @@ export function useLlmApiTester() {
       if (selectedModelIds.length === 1) {
         const selectedModelId = selectedModelIds[0]
         const existingProvider = providers.find((provider) => provider.models.some((model) => model.id === selectedModelId))
-        if (!existingProvider) throw new Error('Selected model is no longer available')
+        if (!existingProvider) throw new ApiError({ code: 'selected_model_missing' })
         await api.updateProvider(existingProvider.id, { ...providerInput, token: providerInput.token || undefined })
         await api.updateModel(selectedModelId, modelInput)
       } else {
@@ -74,30 +75,40 @@ export function useLlmApiTester() {
     setError(undefined)
     try {
       const targets = authenticated && selectedModelIds.length > 0 ? selectedModelIds.map((modelId) => ({ modelId })) : [guest]
-      if (targets.length === 0 || ('modelId' in targets[0] ? !targets[0].modelId : !targets[0].baseUrl || !targets[0].token || !targets[0].modelName)) throw new Error('请先配置一个模型')
+      if (targets.length === 0 || ('modelId' in targets[0] ? !targets[0].modelId : !targets[0].baseUrl || !targets[0].token || !targets[0].modelName)) throw new ApiError({ code: 'test_target_required' })
       setResults({})
       const finalResults = await api.runCapabilitiesStream(targets, selectedCapabilities, (modelRef, capability, result) => {
         setResults((current) => ({ ...current, [modelRef]: { ...(current[modelRef] ?? {}), [capability]: result } }))
       })
       if (Object.keys(finalResults).length > 0) setResults(finalResults)
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : '测试失败')
+      setError(toDisplayError(cause, 'test_run_failed'))
     } finally {
       setBusy(false)
     }
   }
 
   const deleteOwnerProvider = async (id: number) => {
-    const deletingSelectedModel = providers.find((provider) => provider.id === id)?.models.some((model) => selectedModelIds.includes(model.id)) ?? false
-    await api.deleteProvider(id)
-    await refresh()
-    if (deletingSelectedModel) setSelectedModelIds([])
+    setError(undefined)
+    try {
+      const deletingSelectedModel = providers.find((provider) => provider.id === id)?.models.some((model) => selectedModelIds.includes(model.id)) ?? false
+      await api.deleteProvider(id)
+      await refresh()
+      if (deletingSelectedModel) setSelectedModelIds([])
+    } catch (cause) {
+      setError(toDisplayError(cause, 'generic'))
+    }
   }
 
   const deleteOwnerModel = async (id: number) => {
-    await api.deleteModel(id)
-    await refresh()
-    setSelectedModelIds((current) => current.filter((modelId) => modelId !== id))
+    setError(undefined)
+    try {
+      await api.deleteModel(id)
+      await refresh()
+      setSelectedModelIds((current) => current.filter((modelId) => modelId !== id))
+    } catch (cause) {
+      setError(toDisplayError(cause, 'generic'))
+    }
   }
 
   const toggleModel = (id: number) => setSelectedModelIds((current) => current.includes(id) ? current.filter((modelId) => modelId !== id) : [...current, id])

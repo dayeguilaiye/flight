@@ -71,7 +71,7 @@ func (s *Service) ListProviders(ctx context.Context) ([]Provider, error) {
 // CreateProvider persists a provider after validation and token encryption.
 func (s *Service) CreateProvider(ctx context.Context, input ProviderInput) (Provider, error) {
 	if input.Token == nil {
-		return Provider{}, errors.New("provider token is required")
+		return Provider{}, errProviderTokenRequired
 	}
 	if err := validateProvider(input.Name, input.Description, input.BaseURL, *input.Token, true); err != nil {
 		return Provider{}, err

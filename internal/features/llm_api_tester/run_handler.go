@@ -3,7 +3,6 @@ package llm_api_tester
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
 	"strconv"
 	"sync"
@@ -51,7 +50,7 @@ func (h *RunHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	owner := h.auth.IsOwner(r, time.Now().UTC())
 	if err := request.validate(owner); err != nil {
-		httpapi.WriteError(w, http.StatusBadRequest, "invalid_input", err.Error())
+		httpapi.WritePublicError(w, http.StatusBadRequest, err.PublicError)
 		return
 	}
 	if request.hasPersistedTarget() && !owner {
@@ -107,7 +106,8 @@ func (h *RunHandler) runSSE(w http.ResponseWriter, ctx context.Context, request 
 	executed := <-executionCh
 	results, err := executed.results, executed.err
 	if err != nil {
-		writeSSE(w, runEvent{Kind: "error", Error: "The test run could not be completed."})
+		publicError := httpapi.PublicError{Code: "test_run_failed", Message: "The test run could not be completed."}
+		writeSSE(w, runEvent{Kind: "error", Error: &publicError})
 		flusher.Flush()
 		return
 	}
@@ -180,36 +180,46 @@ type testTarget struct {
 	MaxConcurrency *int          `json:"maxConcurrency,omitempty"`
 }
 
-func (r testRunRequest) validate(owner bool) error {
+type requestValidationError struct {
+	httpapi.PublicError
+}
+
+func (e *requestValidationError) Error() string { return e.Message }
+
+func invalidRunRequest(code, message, field string) *requestValidationError {
+	return &requestValidationError{PublicError: httpapi.PublicError{Code: code, Message: message, Field: field}}
+}
+
+func (r testRunRequest) validate(owner bool) *requestValidationError {
 	if len(r.Targets) == 0 {
-		return errors.New("at least one test target is required")
+		return invalidRunRequest("test_target_required", "At least one test target is required.", "targets")
 	}
 	if len(r.Capabilities) == 0 {
-		return errors.New("at least one capability is required")
+		return invalidRunRequest("capability_required", "At least one capability is required.", "capabilities")
 	}
 	if !owner && (len(r.Targets) > guestMaxTargets || len(r.Capabilities) > guestMaxCapabilities) {
-		return errors.New("guest test run exceeds the request limit")
+		return invalidRunRequest("guest_request_limit_exceeded", "The guest test run exceeds the request limit.", "targets")
 	}
 	seen := make(map[CapabilityType]struct{}, len(r.Capabilities))
 	for _, capability := range r.Capabilities {
 		if !containsCapability(capability) {
-			return errors.New("unknown capability")
+			return invalidRunRequest("capability_unknown", "The capability is unknown.", "capabilities")
 		}
 		if _, ok := seen[capability]; ok {
-			return errors.New("duplicate capability")
+			return invalidRunRequest("capability_duplicate", "The capability is duplicated.", "capabilities")
 		}
 		seen[capability] = struct{}{}
 	}
 	for _, target := range r.Targets {
 		if (target.ModelID == nil) == (target.BaseURL == "") {
-			return errors.New("each target must be persisted modelId or ephemeral configuration")
+			return invalidRunRequest("test_target_invalid", "Each target must be a persisted model or an ephemeral configuration.", "targets")
 		}
 		if target.ModelID != nil && *target.ModelID < 1 {
-			return errors.New("modelId is invalid")
+			return invalidRunRequest("model_id_invalid", "The model ID is invalid.", "modelId")
 		}
 		if target.ModelID == nil {
 			if target.Token == "" || target.ModelName == "" || !target.InterfaceType.Valid() {
-				return errors.New("ephemeral target configuration is incomplete")
+				return invalidRunRequest("ephemeral_target_incomplete", "The ephemeral target configuration is incomplete.", "targets")
 			}
 		}
 	}
@@ -248,7 +258,7 @@ type runEvent struct {
 	Delta      string                                         `json:"delta,omitempty"`
 	Result     *CapabilityResult                              `json:"result,omitempty"`
 	Results    map[string]map[CapabilityType]CapabilityResult `json:"results,omitempty"`
-	Error      string                                         `json:"error,omitempty"`
+	Error      *httpapi.PublicError                           `json:"error,omitempty"`
 }
 
 func writeSSE(w http.ResponseWriter, event runEvent) {

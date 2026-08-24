@@ -100,7 +100,7 @@ Feature code may depend on `httpapi`, `platform` or `shared` interfaces, but one
 - Browser API paths are `/api/v1/<feature>/<resource>`.
 - JSON uses camelCase; dates and times use RFC 3339 strings; money is represented as integer minor units plus an explicit currency when precision matters.
 - Successful mutations return the resource or a documented result, never an unstructured message.
-- Errors use `{ "error": { "code": "stable_code", "message": "safe message", "details": {} } }`.
+- Errors use `{ "error": { "code": "stable_code", "message": "safe English diagnostic", "field": "optionalField", "params": {}, "requestId": "optional-id" } }`; SSE error events carry the same object. Browser clients translate the stable code instead of rendering backend prose.
 - Validate external input once at the boundary, then pass typed values inward. Frontend validation improves UX; Go validation remains authoritative.
 
 For a small feature, define the request/response types next to the feature API client and Go handler. Introduce OpenAPI or generated clients only when multiple consumers or contract drift justify the cost.

@@ -19,6 +19,11 @@ body {
   min-width: 320px;
 }
 
+::selection {
+  color: #f4f1ea;
+  background: #d46b45;
+}
+
 button,
 input,
 select {

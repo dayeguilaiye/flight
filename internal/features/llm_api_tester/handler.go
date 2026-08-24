@@ -194,6 +194,18 @@ func writeDomainError(w http.ResponseWriter, err error) {
 	switch {
 	case errors.Is(err, sql.ErrNoRows):
 		httpapi.WriteError(w, http.StatusNotFound, "not_found", "The resource was not found.")
+	case errors.Is(err, errProviderNameRequired):
+		httpapi.WritePublicError(w, http.StatusBadRequest, httpapi.PublicError{Code: "provider_name_required", Message: "Provider name is required.", Field: "name"})
+	case errors.Is(err, errProviderBaseURLInvalid):
+		httpapi.WritePublicError(w, http.StatusBadRequest, httpapi.PublicError{Code: "provider_base_url_invalid", Message: "Provider base URL must be an absolute HTTP or HTTPS URL.", Field: "baseUrl"})
+	case errors.Is(err, errProviderTokenRequired):
+		httpapi.WritePublicError(w, http.StatusBadRequest, httpapi.PublicError{Code: "provider_token_required", Message: "Provider token is required.", Field: "token"})
+	case errors.Is(err, errModelNameRequired):
+		httpapi.WritePublicError(w, http.StatusBadRequest, httpapi.PublicError{Code: "model_name_required", Message: "Model name is required.", Field: "name"})
+	case errors.Is(err, errInterfaceTypeUnsupported):
+		httpapi.WritePublicError(w, http.StatusBadRequest, httpapi.PublicError{Code: "interface_type_unsupported", Message: "The interface type is unsupported.", Field: "interfaceType"})
+	case errors.Is(err, errMaxConcurrencyInvalid):
+		httpapi.WritePublicError(w, http.StatusBadRequest, httpapi.PublicError{Code: "max_concurrency_invalid", Message: "Max concurrency must be at least 1.", Field: "maxConcurrency", Params: map[string]any{"min": 1}})
 	default:
 		httpapi.WriteError(w, http.StatusBadRequest, "invalid_input", "The request is invalid.")
 	}

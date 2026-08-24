@@ -1,5 +1,6 @@
 import { z } from 'zod'
-import type { Capability, CapabilityResult, EphemeralTarget, Provider, TestRunRequest, TestRunResults } from '../types'
+import { ApiError, publicErrorSchema } from '../../../shared/api/errors'
+import { capabilities, type Capability, type CapabilityResult, type EphemeralTarget, type Provider, type TestRunRequest, type TestRunResults } from '../types'
 
 const resultSchema = z.object({
   status: z.enum(['never_run', 'passed', 'failed', 'unsupported', 'not_run']),
@@ -32,16 +33,29 @@ const providerSchema = z.object({
 })
 
 const providersSchema = z.object({ providers: z.array(providerSchema) })
-const runSchema = z.object({ results: z.record(z.string(), z.record(z.string(), resultSchema)) })
+const testRunResultsSchema = z.record(z.string(), z.partialRecord(z.enum(capabilities), resultSchema))
+const runSchema = z.object({ results: testRunResultsSchema })
+const errorEnvelopeSchema = z.object({ error: publicErrorSchema })
+const eventKindSchema = z.object({ kind: z.string() })
+const resultEventSchema = z.object({
+  kind: z.literal('result'),
+  modelRef: z.string(),
+  capability: z.enum(capabilities),
+  result: resultSchema,
+})
+const completeEventSchema = z.object({ kind: z.literal('complete'), results: testRunResultsSchema })
+const errorEventSchema = z.object({ kind: z.literal('error'), error: publicErrorSchema })
+
+function apiErrorFromEnvelope(payload: unknown, fallbackCode = 'request_failed'): ApiError {
+  const decoded = errorEnvelopeSchema.safeParse(payload)
+  return new ApiError(decoded.success ? decoded.data.error : { code: fallbackCode })
+}
 
 async function requestJSON<T>(input: RequestInfo, init: RequestInit, schema: z.ZodType<T>): Promise<T> {
   const response = await fetch(input, { ...init, headers: { 'Content-Type': 'application/json', ...init.headers } })
   const payload: unknown = await response.json().catch(() => undefined)
   if (!response.ok) {
-    const message = typeof payload === 'object' && payload !== null && 'error' in payload
-      ? String((payload as { error?: { message?: unknown } }).error?.message ?? 'Request failed')
-      : 'Request failed'
-    throw new Error(message)
+    throw apiErrorFromEnvelope(payload)
   }
   return schema.parse(payload)
 }
@@ -73,7 +87,10 @@ export async function updateProvider(id: number, input: { name: string; descript
 
 export async function deleteProvider(id: number): Promise<void> {
   const response = await fetch(`/api/v1/llm-api-tester/providers/${id}`, { method: 'DELETE' })
-  if (!response.ok) throw new Error('Unable to delete provider')
+  if (!response.ok) {
+    const payload: unknown = await response.json().catch(() => undefined)
+    throw apiErrorFromEnvelope(payload)
+  }
 }
 
 export async function createModel(providerId: number, input: { name: string; interfaceType: string; maxConcurrency?: number }): Promise<void> {
@@ -86,12 +103,15 @@ export async function updateModel(id: number, input: { name: string; interfaceTy
 
 export async function deleteModel(id: number): Promise<void> {
   const response = await fetch(`/api/v1/llm-api-tester/models/${id}`, { method: 'DELETE' })
-  if (!response.ok) throw new Error('Unable to delete model')
+  if (!response.ok) {
+    const payload: unknown = await response.json().catch(() => undefined)
+    throw apiErrorFromEnvelope(payload)
+  }
 }
 
 export async function runCapabilities(target: { modelId: number } | EphemeralTarget, selected: Capability[]): Promise<TestRunResults> {
   const body: TestRunRequest = { targets: [target], capabilities: selected }
-  return runSchema.parse(await requestJSON('/api/v1/llm-api-tester/test-runs', { method: 'POST', body: JSON.stringify(body) }, runSchema)).results as TestRunResults
+  return runSchema.parse(await requestJSON('/api/v1/llm-api-tester/test-runs', { method: 'POST', body: JSON.stringify(body) }, runSchema)).results
 }
 
 export async function runCapabilitiesStream(
@@ -107,10 +127,7 @@ export async function runCapabilitiesStream(
   })
   if (!response.ok || !response.body) {
     const payload: unknown = await response.json().catch(() => undefined)
-    const message = typeof payload === 'object' && payload !== null && 'error' in payload
-      ? String((payload as { error?: { message?: unknown } }).error?.message ?? 'Request failed')
-      : 'Request failed'
-    throw new Error(message)
+    throw apiErrorFromEnvelope(payload)
   }
   const reader = response.body.getReader()
   const decoder = new TextDecoder()
@@ -120,11 +137,19 @@ export async function runCapabilitiesStream(
     const data = frame.split('\n').filter((line) => line.startsWith('data:')).map((line) => line.slice(5).trim()).join('\n')
     if (!data) return
     const payload: unknown = JSON.parse(data)
-    if (typeof payload !== 'object' || payload === null) return
-    const event = payload as { kind?: string; modelRef?: string; capability?: Capability; result?: CapabilityResult; results?: TestRunResults; error?: string }
-    if (event.kind === 'result' && event.modelRef && event.capability && event.result) onResult(event.modelRef, event.capability, event.result)
-    if (event.kind === 'complete' && event.results) complete = runSchema.parse({ results: event.results }).results as TestRunResults
-    if (event.kind === 'error') throw new Error(event.error ?? 'Test run failed')
+    const eventKind = eventKindSchema.safeParse(payload)
+    if (!eventKind.success) return
+    if (eventKind.data.kind === 'result') {
+      const event = resultEventSchema.parse(payload)
+      onResult(event.modelRef, event.capability, event.result)
+    }
+    if (eventKind.data.kind === 'complete') {
+      complete = completeEventSchema.parse(payload).results
+    }
+    if (eventKind.data.kind === 'error') {
+      const event = errorEventSchema.safeParse(payload)
+      throw new ApiError(event.success ? event.data.error : { code: 'test_run_failed' })
+    }
   }
   while (true) {
     const { value, done } = await reader.read()
