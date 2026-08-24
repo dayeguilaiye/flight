@@ -43,3 +43,36 @@ Built the first Flight LLM API tester MVP: shared SQLite runtime, owner auth and
 ### Next Steps
 
 - None - task complete
+
+
+## Session 2: Frontend bilingual internationalization
+
+**Date**: 2026-08-24
+**Task**: Frontend bilingual internationalization
+**Branch**: `main`
+
+### Summary
+
+Added project-wide zh-CN/en locale state and language switch, localized the LLM tester, standardized JSON and SSE public errors, added cross-layer tests, and documented future i18n/error contracts.
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `560b49a` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
