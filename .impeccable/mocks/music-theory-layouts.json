@@ -1,0 +1,41 @@
+{
+  "title": "选择乐理工作台的页面结构",
+  "question": "三种方案都允许直接进入任意章节与环节，并让虚拟钢琴始终容易触达。请选择最符合你学习习惯的构图。",
+  "options": [
+    {
+      "id": "layered-sound-desk",
+      "label": "三层声音工作台",
+      "kicker": "THE ROLL",
+      "thesis": "上层任意选课，中层边看边实验，下层随时弹奏，让每个术语都立刻落到声音上。",
+      "palette": ["#f4f1ea", "#20201d", "#d46b45", "#68735f"],
+      "materials": ["暖色纸面", "谱线式分隔", "克制的实体控制台"],
+      "viewport": "首屏顶部是六章与环节轨道，中部并排呈现解释和声音结构，底部是一架跨页常驻钢琴。",
+      "risk": "三层都常驻时，移动端需要把章节轨道收成抽屉，避免琴键和正文互相挤压。",
+      "comp": ".impeccable/mocks/decision/music-theory-layered-desk.png"
+    },
+    {
+      "id": "concept-atlas",
+      "label": "可探索乐理图谱",
+      "thesis": "把六章画成相互连接的知识地图，任何节点都可打开为一次声音实验。",
+      "palette": ["#f4f1ea", "#20201d", "#d46b45", "#68735f"],
+      "materials": ["暖色纸面", "地图式关系线", "注释索引签"],
+      "viewport": "左侧是一张可缩放的概念图谱，右侧展开所选环节的试听实验，钢琴停靠在页面下沿。",
+      "risk": "关系图很适合自由探索，但节点过多时可能让完全零基础的用户一开始不知道从哪里看起。",
+      "comp": ".impeccable/mocks/decision/music-theory-concept-atlas.png"
+    },
+    {
+      "id": "chapter-dive",
+      "label": "纵向章节深潜",
+      "thesis": "像读一本可发声的教材一样向下理解当前环节，同时用固定目录瞬间跳到任何位置。",
+      "palette": ["#f4f1ea", "#20201d", "#d46b45", "#68735f"],
+      "materials": ["暖色纸面", "编辑式长文排版", "边栏批注"],
+      "viewport": "左侧是完整章节树，中间是宽阔的交互讲义，钢琴以可展开托盘固定在底部。",
+      "risk": "阅读最从容，但琴键与解释之间的视觉联动不如同屏工作台强。",
+      "comp": ".impeccable/mocks/decision/music-theory-chapter-dive.png"
+    }
+  ],
+  "reroll": {"registers": ["safer", "bolder"]},
+  "buildPath": {"value": "comp", "toggle": true},
+  "canon": false,
+  "steer": true
+}

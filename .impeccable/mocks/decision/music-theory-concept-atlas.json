@@ -1,0 +1,41 @@
+{
+  "created_at": "2026-08-28T15:45:03",
+  "endpoint": "https://sub2api.kuhui.com.cn/v1/images/generations",
+  "request": {
+    "prompt": "Use case: ui-mockup. Asset type: high-fidelity desktop web app concept for an interactive beginner music-theory course. Create a straight-on 16:9 browser viewport screenshot, no device frame. Product language is Chinese. Exact visible title: “听见乐理”. Layout concept: an explorable music-theory atlas. A slim app header sits above a large continuous concept map on the left two-thirds, connecting the six open chapters “琴键与声音”, “音程”, “音阶与调”, “三和弦”, “调内和弦”, “和弦进行”; every chapter shows small clickable lesson nodes and none are locked. The selected node “C 大调的七个和弦” opens a substantial experiment panel on the right with clickable I C, ii Dm, iii Em, IV F, V G, vi Am, vii° Bdim, a C E G construction readout, and play/stop actions. A precise two-octave piano is docked across the bottom, with C E G highlighted in muted terracotta and the root marked with a small non-color symbol. Map connections must be legible and purposeful, not playful bubbles. Style: Flight's quiet utilitarian editorial family, warm paper #f4f1ea, ink #20201d, muted moss #68735f, single terracotta accent #d46b45, flat surfaces, index tabs and fine relationship lines, restrained geometry, no shadows, no gradients. Serious adult learning tool, not a game. No gamification, no streaks, no progress bars, no locked lessons, no badges, no mascots, no childish illustration, no generic dashboard cards, no purple. Keep the piano key geometry musically plausible.",
+    "model": "gpt-image-2",
+    "size": "1792x1024",
+    "n": 1,
+    "quality": "high"
+  },
+  "image_files": [
+    ".impeccable/mocks/decision/music-theory-concept-atlas.png"
+  ],
+  "response_redacted": {
+    "created": 1787903031,
+    "data": [
+      {
+        "b64_json": "<redacted base64: 1605136 chars>",
+        "revised_prompt": "Use case: ui-mockup. Asset type: high-fidelity desktop web app concept for an interactive beginner music-theory course. Create a straight-on 16:9 browser viewport screenshot, no device frame. Product language is Chinese. Exact visible title: “听见乐理”. Layout concept: an explorable music-theory atlas. A slim app header sits above a large continuous concept map on the left two-thirds, connecting the six open chapters “琴键与声音”, “音程”, “音阶与调”, “三和弦”, “调内和弦”, “和弦进行”; every chapter shows small clickable lesson nodes and none are locked. The selected node “C 大调的七个和弦” opens a substantial experiment panel on the right with clickable I C, ii Dm, iii Em, IV F, V G, vi Am, vii° Bdim, a C E G construction readout, and play/stop actions. A precise two-octave piano is docked across the bottom, with C E G highlighted in muted terracotta and the root marked with a small non-color symbol. Map connections must be legible and purposeful, not playful bubbles. Style: Flight's quiet utilitarian editorial family, warm paper #f4f1ea, ink #20201d, muted moss #68735f, single terracotta accent #d46b45, flat surfaces, index tabs and fine relationship lines, restrained geometry, no shadows, no gradients. Serious adult learning tool, not a game. No gamification, no streaks, no progress bars, no locked lessons, no badges, no mascots, no childish illustration, no generic dashboard cards, no purple. Keep the piano key geometry musically plausible."
+      }
+    ],
+    "background": "auto",
+    "output_format": "png",
+    "quality": "auto",
+    "size": "1672x941",
+    "model": "gpt-image-2-codex",
+    "usage": {
+      "input_tokens": 367,
+      "input_tokens_details": {
+        "image_tokens": 0,
+        "text_tokens": 367
+      },
+      "output_tokens": 1158,
+      "output_tokens_details": {
+        "image_tokens": 1158,
+        "text_tokens": 0
+      },
+      "total_tokens": 1525
+    }
+  }
+}

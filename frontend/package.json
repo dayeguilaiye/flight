@@ -11,15 +11,20 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@fontsource/noto-serif-sc": "^5.2.8",
     "@vitejs/plugin-react": "latest",
     "react": "latest",
     "react-dom": "latest",
+    "react-router-dom": "^7.18.2",
     "zod": "latest"
   },
   "devDependencies": {
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.6",
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "autoprefixer": "latest",
+    "jsdom": "^30.0.1",
     "postcss": "latest",
     "tailwindcss": "^3.4.17",
     "typescript": "latest",

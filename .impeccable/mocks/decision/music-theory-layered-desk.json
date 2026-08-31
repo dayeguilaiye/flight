@@ -1,0 +1,41 @@
+{
+  "created_at": "2026-08-28T15:46:47",
+  "endpoint": "https://sub2api.kuhui.com.cn/v1/images/generations",
+  "request": {
+    "prompt": "Use case: ui-mockup. Asset type: high-fidelity desktop web app concept for an interactive beginner music-theory course. Create a straight-on 16:9 browser viewport screenshot, no device frame. Product language is Chinese. Exact visible title: “听见乐理”. Layout concept: a calm three-layer sound workbench. A slim app header and a horizontal chapter/lesson rail occupy the top; show six fully accessible chapters with the current item “调内和弦”. The middle is a spacious split learning canvas: on the left a concise explanation of C major diatonic chords and clickable chord names I C, ii Dm, iii Em, IV F, V G, vi Am, vii° Bdim; on the right a precise visual breakdown of the selected C major chord showing root, third, fifth and note names C E G. A large accurate two-octave piano spans the full bottom edge, with C E G keys visibly highlighted using a muted terracotta accent and root distinguished by a small symbol as well as color. Include clear play chord, arpeggiate, and stop controls. Style: Flight's quiet utilitarian editorial visual family, warm paper #f4f1ea, ink #20201d, muted moss #68735f, one terracotta accent #d46b45, flat surfaces, restrained hairline dividers, no shadows, no gradients, wide readable sans typography with modest serif only for the page title. Dense enough to feel like a real learning tool, not a landing page. No gamification, no streaks, no progress bars, no locked lessons, no badges, no mascots, no illustrations, no fake testimonials, no generic SaaS cards, no purple. Keep the piano key geometry musically plausible and all important controls visible.",
+    "model": "gpt-image-2",
+    "size": "1792x1024",
+    "n": 1,
+    "quality": "high"
+  },
+  "image_files": [
+    ".impeccable/mocks/decision/music-theory-layered-desk.png"
+  ],
+  "response_redacted": {
+    "created": 1787903031,
+    "data": [
+      {
+        "b64_json": "<redacted base64: 1682636 chars>",
+        "revised_prompt": "Use case: ui-mockup. Asset type: high-fidelity desktop web app concept for an interactive beginner music-theory course. Create a straight-on 16:9 browser viewport screenshot, no device frame. Product language is Chinese. Exact visible title: “听见乐理”. Layout concept: a calm three-layer sound workbench. A slim app header and a horizontal chapter/lesson rail occupy the top; show six fully accessible chapters with the current item “调内和弦”. The middle is a spacious split learning canvas: on the left a concise explanation of C major diatonic chords and clickable chord names I C, ii Dm, iii Em, IV F, V G, vi Am, vii° Bdim; on the right a precise visual breakdown of the selected C major chord showing root, third, fifth and note names C E G. A large accurate two-octave piano spans the full bottom edge, with C E G keys visibly highlighted using a muted terracotta accent and root distinguished by a small symbol as well as color. Include clear play chord, arpeggiate, and stop controls. Style: Flight's quiet utilitarian editorial visual family, warm paper #f4f1ea, ink #20201d, muted moss #68735f, one terracotta accent #d46b45, flat surfaces, restrained hairline dividers, no shadows, no gradients, wide readable sans typography with modest serif only for the page title. Dense enough to feel like a real learning tool, not a landing page. No gamification, no streaks, no progress bars, no locked lessons, no badges, no mascots, no illustrations, no fake testimonials, no generic SaaS cards, no purple. Keep the piano key geometry musically plausible and all important controls visible."
+      }
+    ],
+    "background": "auto",
+    "output_format": "png",
+    "quality": "auto",
+    "size": "1672x941",
+    "model": "gpt-image-2-codex",
+    "usage": {
+      "input_tokens": 374,
+      "input_tokens_details": {
+        "image_tokens": 0,
+        "text_tokens": 374
+      },
+      "output_tokens": 1158,
+      "output_tokens_details": {
+        "image_tokens": 1158,
+        "text_tokens": 0
+      },
+      "total_tokens": 1532
+    }
+  }
+}

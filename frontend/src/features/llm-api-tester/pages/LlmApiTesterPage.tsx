@@ -1,4 +1,5 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
+import { Link } from 'react-router-dom'
 import { toDisplayError, type DisplayError } from '../../../shared/api/errors'
 import { translateDisplayError } from '../../../shared/i18n/errors'
 import { useI18n } from '../../../shared/i18n/I18nProvider'
@@ -42,7 +43,7 @@ function DeleteIcon() {
 }
 
 export function LlmApiTesterPage() {
-  const { t } = useI18n()
+  const { locale, t } = useI18n()
   const tester = useLlmApiTester()
   const [providerName, setProviderName] = useState('')
   const [providerDescription, setProviderDescription] = useState('')
@@ -55,6 +56,10 @@ export function LlmApiTesterPage() {
   const [loginOpen, setLoginOpen] = useState(false)
   const [formBusy, setFormBusy] = useState(false)
   const [formNotice, setFormNotice] = useState<FormNotice>()
+
+  useEffect(() => {
+    document.title = t('llm.documentTitle')
+  }, [locale, t])
 
   const submitConfiguration = async (event: FormEvent) => {
     event.preventDefault()
@@ -108,6 +113,9 @@ export function LlmApiTesterPage() {
             <p className="mt-4 max-w-xl text-sm leading-6 text-ink/65 sm:text-base">{t('llm.intro')}</p>
           </div>
           <div className="flex shrink-0 flex-wrap items-center justify-end gap-3">
+            <Link className="rounded-full border border-ink/20 px-4 py-2 text-sm transition hover:border-ink/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal" to="/">
+              {t('common.home')}
+            </Link>
             <LanguageSwitcher />
             <span className="rounded-full bg-moss/10 px-3 py-1.5 text-xs text-moss">
               {t(tester.authenticated ? 'llm.workspace.owner' : 'llm.workspace.guest')}

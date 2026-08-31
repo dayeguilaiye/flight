@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-28T17:42:30+08:00",
+  "title": "Design System: Flight",
+  "extensions": {
+    "colorMeta": {
+      "ink": {
+        "role": "neutral",
+        "displayName": "Soft Ink",
+        "canonical": "#20201d",
+        "tonalRamp": ["#11110f", "#20201d", "#3c3c38", "#595954", "#777770", "#9c9c94", "#c4c3bb", "#eceae4"]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Uncoated Paper",
+        "canonical": "#f4f1ea",
+        "tonalRamp": ["#24231f", "#45423b", "#68635a", "#8d867a", "#b2aa9e", "#d0c9bf", "#e5dfd7", "#f4f1ea"]
+      },
+      "signal": {
+        "role": "primary",
+        "displayName": "Fired Clay Signal",
+        "canonical": "#d46b45",
+        "tonalRamp": ["#3b1710", "#5e2318", "#813021", "#a43e2a", "#c85a40", "#dc806a", "#edb4a5", "#f8e1da"]
+      },
+      "signal-accessible": {
+        "role": "primary",
+        "displayName": "Deep Fired Clay",
+        "canonical": "#b34e33",
+        "tonalRamp": ["#35140e", "#562017", "#772c1f", "#983928", "#b34e33", "#d0755e", "#e8aa9a", "#f7dfd7"]
+      },
+      "moss": {
+        "role": "secondary",
+        "displayName": "Archive Moss",
+        "canonical": "#68735f",
+        "tonalRamp": ["#1b2118", "#2d3529", "#404a3a", "#556049", "#6d7a60", "#929d88", "#bcc4b5", "#e7eae2"]
+      },
+      "moss-accessible": {
+        "role": "secondary",
+        "displayName": "Deep Archive Moss",
+        "canonical": "#626d59",
+        "tonalRamp": ["#192017", "#2b3327", "#3e4837", "#525d46", "#68755a", "#8e9a82", "#b9c1b1", "#e5e9df"]
+      },
+      "focus": {
+        "role": "primary",
+        "displayName": "Proofing Blue",
+        "canonical": "#2457c5",
+        "tonalRamp": ["#0d1d43", "#132d6a", "#193d91", "#204db3", "#3468d4", "#6f92e2", "#adc0ef", "#e5ebfb"]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Shared Editorial Display",
+        "purpose": "Page identities and major tool-section titles."
+      },
+      "editorial-cn": {
+        "displayName": "Chinese Editorial Instrument",
+        "purpose": "Self-hosted music-theory titles, explanations, and structural labels."
+      },
+      "body": {
+        "displayName": "Utilitarian Body",
+        "purpose": "Forms, navigation, descriptions, and dense operating UI."
+      },
+      "label": {
+        "displayName": "Compact Label",
+        "purpose": "Form labels, state text, and course metadata."
+      }
+    },
+    "shadows": [
+      {
+        "name": "floating-drawer",
+        "value": "-1rem 0 3rem rgb(32 32 29 / 18%)",
+        "purpose": "Separates the mobile course drawer from the obscured page."
+      },
+      {
+        "name": "docked-instrument",
+        "value": "0 -0.75rem 2.4rem rgb(32 32 29 / 10%)",
+        "purpose": "Clarifies that the narrow-screen piano is fixed above scrolling content."
+      }
+    ],
+    "motion": [
+      {
+        "name": "state-quick",
+        "value": "150ms ease-out",
+        "purpose": "Color, border, and selected-state feedback."
+      },
+      {
+        "name": "panel-enter",
+        "value": "220ms cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Mobile drawer and dock transitions, disabled under reduced motion."
+      }
+    ],
+    "breakpoints": [
+      { "name": "shared-sm", "value": "640px" },
+      { "name": "music-phone", "value": "700px" },
+      { "name": "music-stack", "value": "1100px" },
+      { "name": "music-wide", "value": "1300px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Ink Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Compact primary action for operating surfaces.",
+      "html": "<button class=\"ds-button-primary\">Run experiment</button>",
+      "css": ".ds-button-primary { border: 0; border-radius: 9999px; padding: 12px 20px; color: #f4f1ea; background: #20201d; font: 600 14px/1.2 Inter, ui-sans-serif, system-ui, sans-serif; transition: background-color 150ms ease-out; cursor: pointer; } .ds-button-primary:hover { background: #b34e33; } .ds-button-primary:focus-visible { outline: 2px solid #2457c5; outline-offset: 3px; }"
+    },
+    {
+      "name": "Paper Field",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "Labeled control with a quiet translucent fill over paper.",
+      "html": "<label class=\"ds-field-label\">Root note<input class=\"ds-field\" value=\"C\"></label>",
+      "css": ".ds-field-label { display: grid; gap: 8px; color: #20201d; font: 600 12px/1.4 Inter, ui-sans-serif, system-ui, sans-serif; } .ds-field { min-height: 44px; padding: 12px 16px; border: 1px solid rgb(32 32 29 / 20%); border-radius: 12px; color: #20201d; background: rgb(255 255 255 / 50%); font: 400 16px/1.4 Inter, ui-sans-serif, system-ui, sans-serif; } .ds-field:hover { border-color: rgb(32 32 29 / 45%); } .ds-field:focus-visible { outline: 2px solid #2457c5; outline-offset: 2px; }"
+    },
+    {
+      "name": "Language Switcher",
+      "kind": "nav",
+      "description": "Page-owned compact locale control.",
+      "html": "<div class=\"ds-language\" role=\"group\" aria-label=\"Language\"><button aria-pressed=\"true\">中文</button><button aria-pressed=\"false\">English</button></div>",
+      "css": ".ds-language { display: inline-flex; padding: 4px; border: 1px solid rgb(32 32 29 / 20%); border-radius: 9999px; background: rgb(255 255 255 / 35%); } .ds-language button { border: 0; border-radius: 9999px; padding: 6px 12px; color: rgb(32 32 29 / 70%); background: transparent; font: 600 12px/1.2 Inter, ui-sans-serif, system-ui, sans-serif; } .ds-language button[aria-pressed=\"true\"] { color: #f4f1ea; background: #20201d; } .ds-language button:focus-visible { outline: 2px solid #2457c5; outline-offset: 2px; }"
+    },
+    {
+      "name": "Editorial Tool Row",
+      "kind": "nav",
+      "refersTo": "tool-row",
+      "description": "Full-width home-page destination in place of a card grid.",
+      "html": "<a class=\"ds-tool-row\" href=\"#\"><strong>Interactive music theory</strong><span>See structures on exact keys and hear them immediately.</span><svg aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path d=\"M5 12h13m-5-5 5 5-5 5\"/></svg></a>",
+      "css": ".ds-tool-row { display: grid; grid-template-columns: minmax(13rem,.8fr) minmax(18rem,1.2fr) 48px; gap: 20px; align-items: center; min-height: 144px; padding: 28px 24px; border-block: 1px solid rgb(32 32 29 / 20%); color: #20201d; background: transparent; text-decoration: none; transition: background-color 150ms ease-out; } .ds-tool-row strong { font: 400 34px/1.1 Georgia, serif; letter-spacing: -.02em; } .ds-tool-row span { max-width: 65ch; font: 400 15px/1.75 Inter, ui-sans-serif, system-ui, sans-serif; } .ds-tool-row svg { width: 24px; height: 24px; padding: 12px; overflow: visible; border: 1px solid rgb(32 32 29 / 25%); border-radius: 50%; fill: none; stroke: currentColor; stroke-width: 1.5; } .ds-tool-row:hover { background: rgb(255 255 255 / 30%); } .ds-tool-row:focus-visible { outline: 2px solid #2457c5; outline-offset: 4px; }"
+    },
+    {
+      "name": "Diatonic Chord Choice",
+      "kind": "custom",
+      "refersTo": "chord-choice-active",
+      "description": "A complete structural choice showing degree, numeral, root, and quality.",
+      "html": "<button class=\"ds-chord-choice\" aria-pressed=\"true\"><span>1</span><strong>I</strong><b>C</b><small>Major triad</small></button>",
+      "css": ".ds-chord-choice { display: grid; grid-template-columns: 28px 52px 1fr auto; gap: 9px; align-items: center; min-height: 56px; padding: 8px 13px; border: 1px solid rgb(32 32 29 / 14%); border-radius: 4px; color: #20201d; background: transparent; font-family: \"Noto Serif SC\", Georgia, serif; text-align: left; cursor: pointer; } .ds-chord-choice strong { font-size: 21px; } .ds-chord-choice small { color: #626d59; } .ds-chord-choice[aria-pressed=\"true\"] { color: #b34e33; background: rgb(179 78 51 / 8%); box-shadow: inset 3px 0 #b34e33; } .ds-chord-choice:focus-visible { outline: 2px solid #2457c5; outline-offset: 3px; }"
+    },
+    {
+      "name": "Active Piano Key",
+      "kind": "custom",
+      "refersTo": "piano-key-active",
+      "description": "Terracotta key with a non-color chord-role marker.",
+      "html": "<button class=\"ds-piano-key\" aria-pressed=\"true\"><span class=\"ds-role\">3</span><span>E4</span></button>",
+      "css": ".ds-piano-key { position: relative; display: flex; width: 64px; height: 116px; align-items: end; justify-content: center; padding: 10px 4px; border: 1px solid rgb(32 32 29 / 32%); border-radius: 0 0 4px 4px; color: #fff; background: #b34e33; font: 600 12px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace; } .ds-role { position: absolute; bottom: 34px; display: grid; width: 20px; height: 20px; place-items: center; border: 1px solid currentColor; border-radius: 50%; font-size: 9px; } .ds-piano-key:hover { background: #9f3f27; } .ds-piano-key:focus-visible { outline: 2px solid #2457c5; outline-offset: 3px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Edited Workbench",
+    "overview": "Flight should feel like a carefully edited personal workroom: warm enough to invite exploration, precise enough to trust with real tasks, and quiet enough that each experiment remains the subject. Independent tools own their composition while warm paper, near-black ink, deliberate hierarchy, restrained accents, semantic HTML, and clearly authored interaction states hold the family together.",
+    "keyCharacteristics": [
+      "Warm paper grounds every light surface.",
+      "Ink rules and spacing establish hierarchy before cards or shadows.",
+      "One terracotta signal and one muted moss support state and context.",
+      "Editorial type is wide, readable, and paired with compact utilitarian labels.",
+      "Each tool owns its layout while remaining visibly part of the same collection."
+    ],
+    "rules": [
+      { "name": "The One Signal Rule", "body": "A surface may deepen terracotta or moss for contrast, but it does not introduce a second decorative accent family.", "section": "colors" },
+      { "name": "The Contrast Pair Rule", "body": "Small text must use the accessible signal or moss variants; the lighter shared variants are not acceptable merely because the hue looks correct.", "section": "colors" },
+      { "name": "The Wide Heading Rule", "body": "A display heading should read as one decisive shape and never collapse into six short decorative lines.", "section": "typography" },
+      { "name": "The Page-Owned Frame Rule", "body": "Routing chooses the surface but does not render a shared visual header, shell, or mandatory tool chrome.", "section": "layout" },
+      { "name": "The Structural Depth Rule", "body": "If two surfaces do not physically overlap, separate them with space, tone, or a rule instead of a shadow.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do let each tool choose the layout that best serves its task.",
+      "Do establish hierarchy with type, spacing, and ink rules before adding containers.",
+      "Do use self-hosted fonts when a feature depends on a distinctive editorial face.",
+      "Do keep links semantic, focus visible, small text WCAG AA, and mobile touch targets usable.",
+      "Do make selected states understandable through text or shape as well as color."
+    ],
+    "donts": [
+      "Don't add a global visual header merely because the project has multiple routes.",
+      "Don't turn tools into generic card dashboards, bento grids, or marketing landing pages.",
+      "Don't introduce gradients, glass, heavy shadows, fake proof, or ornamental metrics without a product reason.",
+      "Don't use gamified progress, gates, streaks, or badges for exploratory learning surfaces.",
+      "Don't invent a new accent hue when a darker accessible variant of the shared palette will work."
+    ]
+  }
+}

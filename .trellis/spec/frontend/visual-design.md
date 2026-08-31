@@ -11,9 +11,10 @@ The visual system must support both practical tools and more expressive experime
 ## Source of Truth and Decision Order
 
 1. Product facts and task requirements win.
-2. This document defines project-wide visual defaults.
-3. A surface mode defines density, motion and composition emphasis.
-4. A feature may introduce a local accent or visual treatment only when it remains accessible and explains the feature.
+2. Root `DESIGN.md` supplies the implemented visual tokens and named design rules; `.impeccable/design.json` is its renderable sidecar, not a second source of truth.
+3. This document defines project-wide implementation defaults.
+4. A surface mode defines density, motion and composition emphasis.
+5. A feature may introduce a local accent or visual treatment only when it remains accessible and explains the feature.
 
 Do not copy a third-party skill's complete structure into the repository. Borrow a useful principle, translate it into this document, and make the resulting rule testable.
 
@@ -77,6 +78,23 @@ Use semantic names instead of scattering hex values through JSX. One feature may
 - A surface chooses light, dark or system theme at its root. Sections must not randomly invert the theme.
 - Test text, controls, focus rings, helper text and error states against their actual background. Target WCAG AA contrast.
 
+### Convention: Contrast-paired accent tokens
+
+**What**: When a shared accent is intentionally soft, define a darker feature-local or system-level variant for small text and light-on-accent labels instead of changing hue or accepting a near miss.
+
+**Why**: The same terracotta or moss can pass for large marks while failing WCAG AA by a small amount for course indices, key labels, or compact status text. A named darker pair preserves the visual family and makes the safe use explicit.
+
+```css
+/* Shared expressive color for large or non-text emphasis. */
+--signal: #d46b45;
+
+/* Small text and white-on-accent state require the AA pair. */
+--signal-accessible: #b34e33;
+--moss-accessible: #626d59;
+```
+
+Do not lower opacity on already-muted small text without checking the composited color against its real surface.
+
 ## Motion
 
 - Motion communicates hierarchy, storytelling, feedback or state transition. “It looks cool” is not a reason.
@@ -100,6 +118,31 @@ Use semantic names instead of scattering hex values through JSX. One feature may
 - Loading, empty, error and success states are designed as part of the surface, not added after the happy path.
 - Responsive behavior is explicit below 768px. High-variance layouts become a clear single-column flow unless horizontal interaction is the feature itself.
 - Check both theme modes when supported, keyboard-only operation, narrow widths and reduced motion before declaring a surface complete.
+
+## Routed Tool Frames
+
+### Convention: Page-owned visual composition
+
+**What**: `src/app` owns route selection and providers, but each independent tool page owns its header, home link, language-control placement, title treatment, and responsive frame.
+
+**Why**: Flight hosts unrelated tools. A mandatory router-level header would force one task model and density onto every feature, while a visually neutral router still preserves stable direct URLs and shared accessibility contracts.
+
+```tsx
+// Correct: routing composes independent surfaces without shared visual chrome.
+<Routes>
+  <Route element={<HomePage />} path="/" />
+  <Route element={<LlmApiTesterPage />} path="/llm-api-tester" />
+  <Route element={<MusicTheoryPage />} path="/music-theory/*" />
+</Routes>
+```
+
+```tsx
+// Wrong: a global visual wrapper dictates every tool's composition.
+<AppHeader />
+<Routes>{/* unrelated tools */}</Routes>
+```
+
+Shared providers and focus/contrast rules remain application-wide; visual framing does not.
 
 ## Review Checklist
 

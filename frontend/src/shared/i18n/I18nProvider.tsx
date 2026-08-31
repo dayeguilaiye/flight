@@ -29,7 +29,6 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     document.documentElement.lang = locale
-    document.title = translate(locale, 'document.title')
   }, [locale])
 
   const value = useMemo<I18nContextValue>(() => ({

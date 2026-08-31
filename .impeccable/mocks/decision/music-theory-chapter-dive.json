@@ -1,0 +1,41 @@
+{
+  "created_at": "2026-08-28T15:45:11",
+  "endpoint": "https://sub2api.kuhui.com.cn/v1/images/generations",
+  "request": {
+    "prompt": "Use case: ui-mockup. Asset type: high-fidelity desktop web app concept for an interactive beginner music-theory course. Create a straight-on 16:9 browser viewport screenshot, no device frame. Product language is Chinese. Exact visible title: “听见乐理”. Layout concept: a vertical chapter deep-dive, like a calm interactive textbook. A complete always-open chapter tree occupies a narrow left rail and exposes every lesson in all six chapters without locks. The center is a wide editorial lesson page for “调内和弦” with a concise explanation, a clean sequence of seven clickable harmony rows I C, ii Dm, iii Em, IV F, V G, vi Am, vii° Bdim, and one focused diagram explaining C E G as root, third and fifth. A slim right margin contains helpful annotations such as “为什么从 C 开始？” and playback mode controls. A precise two-octave virtual piano sits in an expandable but currently open tray fixed to the bottom, highlighting C E G in muted terracotta and marking the root with a small non-color symbol. Style: Flight's quiet utilitarian editorial family, warm paper #f4f1ea, ink #20201d, muted moss #68735f, one terracotta accent #d46b45, wide readable measures, fine rules, flat surfaces, no shadows, no gradients. Serious adult learning, not a game or marketing page. No gamification, no streaks, no progress bars, no locked lessons, no badges, no mascots, no generic SaaS cards, no purple. Keep the piano key geometry musically plausible and avoid excessive scrolling in the shown viewport.",
+    "model": "gpt-image-2",
+    "size": "1792x1024",
+    "n": 1,
+    "quality": "high"
+  },
+  "image_files": [
+    ".impeccable/mocks/decision/music-theory-chapter-dive.png"
+  ],
+  "response_redacted": {
+    "created": 1787903031,
+    "data": [
+      {
+        "b64_json": "<redacted base64: 1812040 chars>",
+        "revised_prompt": "Use case: ui-mockup. Asset type: high-fidelity desktop web app concept for an interactive beginner music-theory course. Create a straight-on 16:9 browser viewport screenshot, no device frame. Product language is Chinese. Exact visible title: “听见乐理”. Layout concept: a vertical chapter deep-dive, like a calm interactive textbook. A complete always-open chapter tree occupies a narrow left rail and exposes every lesson in all six chapters without locks. The center is a wide editorial lesson page for “调内和弦” with a concise explanation, a clean sequence of seven clickable harmony rows I C, ii Dm, iii Em, IV F, V G, vi Am, vii° Bdim, and one focused diagram explaining C E G as root, third and fifth. A slim right margin contains helpful annotations such as “为什么从 C 开始？” and playback mode controls. A precise two-octave virtual piano sits in an expandable but currently open tray fixed to the bottom, highlighting C E G in muted terracotta and marking the root with a small non-color symbol. Style: Flight's quiet utilitarian editorial family, warm paper #f4f1ea, ink #20201d, muted moss #68735f, one terracotta accent #d46b45, wide readable measures, fine rules, flat surfaces, no shadows, no gradients. Serious adult learning, not a game or marketing page. No gamification, no streaks, no progress bars, no locked lessons, no badges, no mascots, no generic SaaS cards, no purple. Keep the piano key geometry musically plausible and avoid excessive scrolling in the shown viewport."
+      }
+    ],
+    "background": "auto",
+    "output_format": "png",
+    "quality": "auto",
+    "size": "1672x941",
+    "model": "gpt-image-2-codex",
+    "usage": {
+      "input_tokens": 349,
+      "input_tokens_details": {
+        "image_tokens": 0,
+        "text_tokens": 349
+      },
+      "output_tokens": 1158,
+      "output_tokens_details": {
+        "image_tokens": 1158,
+        "text_tokens": 0
+      },
+      "total_tokens": 1507
+    }
+  }
+}

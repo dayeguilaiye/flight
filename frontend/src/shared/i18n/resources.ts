@@ -1,8 +1,25 @@
+import { musicTheoryEn, musicTheoryZhCN } from './musicTheoryResources'
+
 export const zhCN = {
   'document.title': 'Flight · 工具实验场',
+  'common.home': '返回 Flight 首页',
+  'common.notFoundTitle': '这个页面不存在',
+  'common.notFoundBody': '链接可能已经失效，或者地址输入有误。',
+  'common.returnHome': '回到工具首页',
   'language.label': '切换界面语言',
   'language.zhCN': '中文',
   'language.en': '英文',
+  'home.documentTitle': 'Flight · 工具实验场',
+  'home.title': 'Flight',
+  'home.intro': '一组彼此独立的小工具与交互实验。选择一个方向，直接开始使用。',
+  'home.toolsLabel': '可用工具',
+  'home.llm.title': 'LLM API 测试器',
+  'home.llm.description': '配置一个模型接口，用一组明确的问题观察它真实支持哪些能力。',
+  'home.music.title': '听见乐理',
+  'home.music.description': '不用实体钢琴，把音程、音阶、和弦与进行变成能看、能按、能听的实验。',
+  'home.openTool': '打开{{name}}',
+  'home.toolsCount': '{{count}} 个工具',
+  'llm.documentTitle': 'LLM API 测试器 · Flight',
   'llm.experiment': 'Flight / 实验 01',
   'llm.title': 'LLM API 测试器',
   'llm.intro': '给模型一组明确的问题，观察它真实支持什么。访客可以临时测试；登录后才会保存你的配置和最近结果。',
@@ -103,6 +120,7 @@ export const zhCN = {
   'error.configuration_failed': '配置保存失败，请检查后重试。',
   'error.login_failed': '登录失败，请重试。',
   'error.generic': '操作未能完成，请稍后重试。',
+  ...musicTheoryZhCN,
 } as const
 
 export type TranslationKey = keyof typeof zhCN
@@ -110,9 +128,24 @@ export type TranslationParams = Record<string, string | number | boolean>
 
 export const en = {
   'document.title': 'Flight · Tool Lab',
+  'common.home': 'Back to Flight home',
+  'common.notFoundTitle': 'This page does not exist',
+  'common.notFoundBody': 'The link may be out of date, or the address may be incorrect.',
+  'common.returnHome': 'Return to the tool index',
   'language.label': 'Switch interface language',
   'language.zhCN': 'Chinese',
   'language.en': 'English',
+  'home.documentTitle': 'Flight · Tool Lab',
+  'home.title': 'Flight',
+  'home.intro': 'A small collection of independent tools and interactive experiments. Pick a direction and start using it.',
+  'home.toolsLabel': 'Available tools',
+  'home.llm.title': 'LLM API tester',
+  'home.llm.description': 'Configure a model endpoint and use focused questions to see what it actually supports.',
+  'home.music.title': 'Hear music theory',
+  'home.music.description': 'No physical piano required: turn intervals, scales, chords, and progressions into things you can see, press, and hear.',
+  'home.openTool': 'Open {{name}}',
+  'home.toolsCount': '{{count}} tools',
+  'llm.documentTitle': 'LLM API tester · Flight',
   'llm.experiment': 'Flight / experiment 01',
   'llm.title': 'LLM API tester',
   'llm.intro': 'Give a model a focused set of questions and see what it actually supports. Guests can run temporary tests; sign in to save configurations and recent results.',
@@ -213,6 +246,7 @@ export const en = {
   'error.configuration_failed': 'The configuration could not be saved. Check it and try again.',
   'error.login_failed': 'Login failed. Try again.',
   'error.generic': 'The operation could not be completed. Try again later.',
+  ...musicTheoryEn,
 } satisfies Record<TranslationKey, string>
 
 export const resources = { 'zh-CN': zhCN, en }

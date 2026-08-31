@@ -1,0 +1,1553 @@
+.music-theory-page {
+  --music-paper: #f4f1ea;
+  --music-paper-deep: #e9e6dc;
+  --music-ink: #20201d;
+  --music-muted: #676861;
+  --music-line: rgb(32 32 29 / 32%);
+  --music-line-soft: rgb(32 32 29 / 14%);
+  --music-signal: #b34e33;
+  --music-signal-dark: #9f3f27;
+  --music-moss: #626d59;
+  --music-moss-soft: #dfe2d5;
+  --music-display: "Noto Serif SC", "Songti SC", "STSong", serif;
+  display: grid;
+  grid-template-columns: 18.75rem minmax(34rem, 1fr) 19.25rem;
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  color: var(--music-ink);
+  background: var(--music-paper);
+  accent-color: var(--music-signal);
+  font-family: var(--music-display);
+}
+
+.music-theory-page button,
+.music-theory-page a,
+.music-theory-page select,
+.music-theory-page input {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.music-theory-page :focus-visible {
+  outline: 2px solid #2457c5;
+  outline-offset: 3px;
+}
+
+.music-skip-link {
+  position: fixed;
+  z-index: 100;
+  top: 0.75rem;
+  left: 0.75rem;
+  translate: 0 -200%;
+  padding: 0.65rem 0.9rem;
+  color: white;
+  background: var(--music-ink);
+}
+
+.music-skip-link:focus {
+  translate: 0;
+}
+
+.music-course-rail {
+  grid-row: 1 / 3;
+  min-width: 0;
+  overflow-y: auto;
+  border-right: 1px solid var(--music-line);
+  scrollbar-color: var(--music-moss) transparent;
+  scrollbar-width: thin;
+}
+
+.course-navigator {
+  min-height: 100%;
+}
+
+.course-identity {
+  position: sticky;
+  z-index: 2;
+  top: 0;
+  padding: 1.15rem 1.55rem 1rem;
+  border-bottom: 1px solid var(--music-line);
+  background: rgb(244 241 234 / 96%);
+}
+
+.course-identity-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.course-identity-top > p,
+.lesson-article h1 {
+  font-family: var(--music-display);
+}
+
+.course-identity-top > p {
+  margin: 0;
+  font-size: 1.85rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1;
+}
+
+.course-identity-top [role="group"] {
+  flex-shrink: 0;
+}
+
+.course-identity-top [role="group"] button {
+  padding-inline: 0.55rem;
+}
+
+.course-home-link {
+  display: inline-flex;
+  min-height: 2rem;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.7rem;
+  color: rgb(32 32 29 / 76%);
+  font-size: 0.68rem;
+  text-decoration: none;
+}
+
+.course-home-link:hover {
+  color: var(--music-ink);
+  text-decoration: underline;
+  text-underline-offset: 0.2rem;
+}
+
+.course-identity-intro {
+  display: none;
+}
+
+.course-tree {
+  padding: 0.65rem 0.95rem 1.35rem;
+}
+
+.course-chapter + .course-chapter {
+  margin-top: 0.38rem;
+}
+
+.course-chapter-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  margin: 0 0 0.08rem;
+  padding: 0 0.25rem;
+  font-family: var(--music-display);
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.course-chapter-title > span {
+  color: var(--music-moss);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.68rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.course-chapter ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.course-lesson-link {
+  display: grid;
+  grid-template-columns: 2.15rem 1fr;
+  align-items: baseline;
+  min-height: 1.1rem;
+  padding: 0.08rem 0.55rem;
+  border-radius: 0.25rem;
+  color: rgb(32 32 29 / 76%);
+  font-size: 0.68rem;
+  line-height: 1.35;
+  text-decoration: none;
+  transition: color 150ms ease-out, background-color 150ms ease-out;
+}
+
+.course-lesson-link > span:first-child {
+  color: rgb(32 32 29 / 66%);
+  font-variant-numeric: tabular-nums;
+}
+
+.course-lesson-link:hover {
+  color: var(--music-ink);
+  background: rgb(255 255 255 / 42%);
+}
+
+.course-lesson-link.is-current {
+  color: var(--music-ink);
+  background: var(--music-moss-soft);
+  font-weight: 600;
+}
+
+.course-lab-link {
+  display: block;
+  margin-top: 0.65rem;
+  padding: 0.45rem 0.55rem;
+  border-block: 1px solid var(--music-line-soft);
+  color: var(--music-ink);
+  font-family: var(--music-display);
+  font-size: 0.78rem;
+  text-decoration: none;
+}
+
+.course-lab-link.is-current {
+  background: var(--music-moss-soft);
+}
+
+.future-map {
+  margin-top: 1.6rem;
+  padding: 0 0.8rem;
+  color: var(--music-muted);
+}
+
+.future-map h2 {
+  margin: 0;
+  color: var(--music-moss);
+  font-family: var(--music-display);
+  font-size: 0.84rem;
+}
+
+.future-map p {
+  margin: 0.5rem 0 0;
+  font-size: 0.7rem;
+  line-height: 1.65;
+}
+
+.future-map ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.8rem;
+  margin: 0.7rem 0 0;
+  padding: 0;
+  font-size: 0.68rem;
+  list-style: none;
+}
+
+.future-map li::before {
+  content: "— ";
+  color: var(--music-signal);
+}
+
+.music-mobile-header {
+  display: none;
+}
+
+.music-lesson-region {
+  min-width: 0;
+  overflow-y: auto;
+  scrollbar-color: var(--music-moss) transparent;
+  scrollbar-width: thin;
+}
+
+.lesson-article {
+  max-width: 62rem;
+  min-height: 100%;
+  margin: 0 auto;
+  padding: clamp(1.7rem, 2.6vw, 2.8rem) clamp(2rem, 3vw, 3.7rem) 2rem;
+}
+
+.lesson-breadcrumb {
+  margin: 0 0 1rem;
+  color: var(--music-muted);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.lesson-article h1 {
+  max-width: none;
+  margin: 0;
+  font-size: clamp(2.65rem, 3vw, 3.25rem);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+.lesson-summary {
+  max-width: 67ch;
+  margin: 0.85rem 0 0;
+  color: rgb(32 32 29 / 74%);
+  font-family: var(--music-display);
+  font-size: clamp(0.96rem, 1.15vw, 1.08rem);
+  line-height: 1.7;
+}
+
+.lesson-experiment {
+  margin-top: clamp(1.4rem, 2.2vw, 2.2rem);
+  border-block: 1px solid var(--music-line);
+  padding-block: clamp(1.15rem, 2vw, 1.8rem);
+}
+
+.theory-controls-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.15rem 1.4rem;
+}
+
+.theory-field,
+.theory-choice-field {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.theory-field-wide,
+.theory-choice-field-wide {
+  grid-column: 1 / -1;
+}
+
+.theory-field > span,
+.theory-choice-field > legend {
+  display: block;
+  margin-bottom: 0.45rem;
+  padding: 0;
+  color: var(--music-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.theory-field select {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0 2.4rem 0 0.75rem;
+  border: 1px solid var(--music-line);
+  border-radius: 0.25rem;
+  color: var(--music-ink);
+  background: rgb(255 255 255 / 34%);
+}
+
+.theory-choice-row {
+  display: flex;
+  flex-wrap: wrap;
+  border: 1px solid var(--music-line);
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+
+.theory-choice-row button {
+  flex: 1 1 auto;
+  min-height: 2.7rem;
+  padding: 0.55rem 0.75rem;
+  border: 0;
+  border-right: 1px solid var(--music-line-soft);
+  color: var(--music-muted);
+  background: transparent;
+  cursor: pointer;
+}
+
+.theory-choice-row button:last-child {
+  border-right: 0;
+}
+
+.theory-choice-row button[aria-pressed="true"] {
+  color: var(--music-paper);
+  background: var(--music-ink);
+}
+
+.keyboard-concept,
+.interval-ruler {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 7rem;
+}
+
+.keyboard-concept > span,
+.keyboard-concept > strong,
+.interval-ruler > strong {
+  display: grid;
+  min-width: 3.2rem;
+  min-height: 3.2rem;
+  place-items: center;
+  border: 1px solid var(--music-line);
+  font-family: var(--music-display);
+  font-size: 1.35rem;
+}
+
+.keyboard-concept-line {
+  flex: 1;
+  max-width: 8rem;
+  height: 1px;
+  background: var(--music-line);
+}
+
+.interval-ruler > span {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.6rem;
+  color: var(--music-muted);
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.interval-ruler i {
+  display: block;
+  max-width: 100%;
+  height: 2px;
+  margin: 0 auto;
+  background: var(--music-signal);
+}
+
+.scale-formula,
+.triad-formula {
+  display: flex;
+  justify-content: center;
+  gap: 1px;
+  margin-top: 1.8rem;
+  background: var(--music-line);
+}
+
+.scale-formula > span,
+.triad-formula > span {
+  display: grid;
+  flex: 1;
+  min-height: 4.5rem;
+  place-items: center;
+  align-content: center;
+  gap: 0.3rem;
+  background: var(--music-paper);
+}
+
+.scale-formula b,
+.triad-formula b {
+  font-family: var(--music-display);
+  font-size: 1.25rem;
+}
+
+.scale-formula small,
+.triad-formula small {
+  color: var(--music-muted);
+  font-size: 0.68rem;
+}
+
+.scale-degree-row,
+.diatonic-chord-row,
+.progression-route,
+.pitch-class-grid {
+  display: grid;
+  margin-top: 1.6rem;
+  border: 1px solid var(--music-line);
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+
+.scale-degree-row,
+.diatonic-chord-row {
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.scale-degree-row button,
+.diatonic-chord-row button,
+.progression-route button,
+.pitch-class-grid button {
+  min-width: 0;
+  min-height: 4.3rem;
+  padding: 0.55rem 0.35rem;
+  border: 0;
+  border-right: 1px solid var(--music-line-soft);
+  color: var(--music-ink);
+  background: rgb(255 255 255 / 24%);
+  cursor: pointer;
+}
+
+.scale-degree-row button:last-child,
+.diatonic-chord-row button:last-child,
+.progression-route button:last-child,
+.pitch-class-grid button:last-child {
+  border-right: 0;
+}
+
+.scale-degree-row button:hover,
+.diatonic-chord-row button:hover,
+.progression-route button:hover,
+.pitch-class-grid button:hover {
+  background: rgb(255 255 255 / 55%);
+}
+
+.scale-degree-row button span,
+.diatonic-chord-row button span,
+.progression-route button span {
+  display: block;
+  margin-bottom: 0.2rem;
+  color: var(--music-muted);
+  font-size: 0.68rem;
+}
+
+.scale-degree-row button strong,
+.diatonic-chord-row button strong,
+.progression-route button strong {
+  font-family: var(--music-display);
+  font-size: 1rem;
+}
+
+.diatonic-chord-row button[aria-pressed="true"],
+.progression-route button[aria-pressed="true"],
+.pitch-class-grid button[aria-pressed="true"] {
+  color: var(--music-paper);
+  background: var(--music-signal);
+}
+
+.diatonic-chord-row button[aria-pressed="true"] span,
+.progression-route button[aria-pressed="true"] span {
+  color: rgb(244 241 234 / 82%);
+}
+
+.harmony-readout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin-top: 1px;
+  background: var(--music-line-soft);
+}
+
+.harmony-readout p {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 1rem;
+  background: var(--music-paper);
+}
+
+.harmony-readout span {
+  color: var(--music-muted);
+  font-size: 0.68rem;
+}
+
+.harmony-controls {
+  gap: 0.8rem;
+  margin-bottom: 0.85rem;
+}
+
+.harmony-controls .theory-field > span,
+.harmony-controls .theory-choice-field > legend {
+  margin-bottom: 0.3rem;
+  font-size: 0.66rem;
+}
+
+.harmony-controls .theory-field select,
+.harmony-controls .theory-choice-row button {
+  min-height: 2.25rem;
+}
+
+.harmony-deep-dive {
+  display: grid;
+  grid-template-columns: minmax(14rem, 0.7fr) minmax(21rem, 1.3fr);
+  gap: clamp(1.4rem, 2.7vw, 3.4rem);
+  align-items: stretch;
+}
+
+.harmony-chord-list {
+  display: grid;
+  border: 1px solid var(--music-line);
+  border-radius: 0.25rem;
+  overflow: hidden;
+  background: rgb(255 255 255 / 18%);
+}
+
+.harmony-chord-list button {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.8rem 3.25rem minmax(2.5rem, 1fr) auto 1rem;
+  min-width: 0;
+  min-height: 3.55rem;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.5rem 0.8rem;
+  border: 0;
+  border-bottom: 1px solid var(--music-line-soft);
+  color: var(--music-ink);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 150ms ease-out, box-shadow 150ms ease-out;
+}
+
+.harmony-chord-list button:last-child {
+  border-bottom: 0;
+}
+
+.harmony-chord-list button:hover {
+  background: rgb(255 255 255 / 52%);
+}
+
+.harmony-chord-list button[aria-pressed="true"] {
+  background: rgb(201 95 63 / 8%);
+  box-shadow: inset 0.18rem 0 var(--music-signal);
+}
+
+.harmony-chord-list button[aria-pressed="true"] strong,
+.harmony-chord-list button[aria-pressed="true"] .harmony-chord-root {
+  color: var(--music-signal-dark);
+}
+
+.harmony-chord-list button strong {
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.harmony-chord-list button small {
+  color: var(--music-muted);
+  font-size: 0.63rem;
+  white-space: nowrap;
+}
+
+.harmony-chord-list button svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  color: var(--music-muted);
+}
+
+.harmony-chord-degree {
+  color: var(--music-moss);
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.harmony-chord-root {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 1.05rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.harmony-focus-card {
+  min-width: 0;
+  padding: 1.1rem 1.25rem 1rem;
+  border: 1px solid var(--music-line);
+  border-radius: 0.25rem;
+  background: rgb(255 255 255 / 18%);
+}
+
+.harmony-focus-card h2 {
+  margin: 0;
+  font-size: clamp(1.15rem, 1.5vw, 1.4rem);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.harmony-focus-card > p {
+  max-width: 48ch;
+  margin: 0.65rem 0 0;
+  color: rgb(32 32 29 / 78%);
+  font-size: 0.78rem;
+  line-height: 1.65;
+}
+
+.chord-staff {
+  position: relative;
+  min-height: 5.85rem;
+  margin-top: 0.75rem;
+  padding: 0.45rem 0;
+  overflow: hidden;
+}
+
+.chord-staff::before {
+  position: absolute;
+  top: 0.4rem;
+  bottom: 0.4rem;
+  left: 0;
+  width: 1px;
+  content: "";
+  background: var(--music-line);
+}
+
+.chord-staff-lines {
+  position: absolute;
+  inset: 1rem 0.15rem 1rem 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.chord-staff-lines span {
+  width: 68%;
+  border-top: 1px solid var(--music-line);
+}
+
+.chord-staff-notes {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  min-height: 5rem;
+  align-content: space-between;
+}
+
+.chord-staff-notes button {
+  display: grid;
+  grid-template-columns: minmax(5rem, 1fr) 3rem minmax(5rem, 0.75fr);
+  min-height: 1.9rem;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0;
+  border: 0;
+  color: var(--music-ink);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.chord-staff-notes button i {
+  position: relative;
+  display: block;
+  width: 0.95rem;
+  height: 0.64rem;
+  justify-self: end;
+  border-radius: 50%;
+  background: var(--music-ink);
+  rotate: -10deg;
+}
+
+.chord-staff-notes button i::after {
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  width: clamp(2.25rem, 8vw, 5rem);
+  height: 1px;
+  content: "";
+  background: var(--music-line);
+}
+
+.chord-staff-notes button strong {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.chord-staff-notes button span {
+  color: var(--music-muted);
+  font-size: 0.68rem;
+}
+
+.harmony-focus-piano {
+  height: 5rem;
+  margin-top: 0.65rem;
+}
+
+.harmony-focus-piano .piano-black-key {
+  width: 1.65rem;
+}
+
+.harmony-focus-card .note-structure {
+  margin-top: 0.9rem;
+}
+
+.harmony-focus-card .note-structure-item {
+  min-height: 3.5rem;
+  padding-block: 0.45rem;
+}
+
+.progression-route {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.progression-route button {
+  position: relative;
+}
+
+.progression-route svg {
+  position: absolute;
+  top: 50%;
+  right: -0.55rem;
+  z-index: 2;
+  padding: 0.15rem;
+  translate: 0 -50%;
+  color: var(--music-muted);
+  background: var(--music-paper);
+}
+
+.note-structure {
+  margin-top: 1.15rem;
+}
+
+.note-structure h2,
+.free-note-heading h2 {
+  margin: 0 0 0.7rem;
+  color: var(--music-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.note-structure-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr));
+  border-block: 1px solid var(--music-line-soft);
+}
+
+.note-structure-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.05rem 0.6rem;
+  min-height: 4.8rem;
+  align-content: center;
+  padding: 0.65rem;
+  border-right: 1px solid var(--music-line-soft);
+}
+
+.note-structure-item:last-child {
+  border-right: 0;
+}
+
+.note-structure-item strong {
+  font-family: var(--music-display);
+  font-size: 1.35rem;
+}
+
+.note-structure-item > span:last-child {
+  grid-column: 2;
+  color: var(--music-muted);
+  font-size: 0.68rem;
+}
+
+.note-marker {
+  display: grid;
+  width: 1.65rem;
+  height: 1.65rem;
+  place-items: center;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  color: var(--music-moss);
+  font-size: 0.64rem;
+}
+
+.note-structure-item.role-root .note-marker,
+.note-structure-item.role-tonic .note-marker {
+  color: var(--music-signal-dark);
+}
+
+.inline-audition,
+.invalid-course-button {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.2rem;
+  padding: 0.7rem 1.1rem;
+  border: 1px solid var(--music-ink);
+  border-radius: 0.25rem;
+  color: var(--music-paper);
+  background: var(--music-ink);
+  font-size: 0.78rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.invalid-course-button {
+  color: var(--music-ink);
+  background: transparent;
+}
+
+.lesson-pagination {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1.8rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--music-line-soft);
+}
+
+.lesson-page-link {
+  display: flex;
+  min-height: 4rem;
+  align-items: center;
+  gap: 0.8rem;
+  color: var(--music-ink);
+  text-decoration: none;
+}
+
+.lesson-page-link.is-next {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.lesson-page-link small {
+  display: block;
+  margin-bottom: 0.2rem;
+  color: var(--music-muted);
+  font-size: 0.65rem;
+}
+
+.lesson-inspector {
+  min-width: 0;
+  overflow-y: auto;
+  border-left: 1px solid var(--music-line);
+  scrollbar-color: var(--music-moss) transparent;
+  scrollbar-width: thin;
+}
+
+.lesson-inspector section {
+  padding: 2rem 1.8rem;
+}
+
+.lesson-inspector section + section {
+  border-top: 1px solid var(--music-line);
+}
+
+.lesson-inspector h2 {
+  margin: 0;
+  color: var(--music-moss);
+  font-family: var(--music-display);
+  font-size: 1.05rem;
+}
+
+.lesson-inspector p {
+  margin: 1.2rem 0 0;
+  color: rgb(32 32 29 / 72%);
+  font-family: var(--music-display);
+  font-size: 0.9rem;
+  line-height: 1.85;
+}
+
+.inspector-button-list {
+  margin-top: 1.2rem;
+  border: 1px solid var(--music-line);
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+
+.playback-mode-button,
+.playback-stop-button {
+  display: flex;
+  width: 100%;
+  min-height: 3.25rem;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 0.85rem;
+  border: 0;
+  border-bottom: 1px solid var(--music-line-soft);
+  color: var(--music-ink);
+  background: transparent;
+  font-size: 0.78rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.playback-mode-button:hover {
+  background: rgb(255 255 255 / 48%);
+}
+
+.playback-stop-button {
+  border-bottom: 0;
+  color: var(--music-signal-dark);
+}
+
+.playback-stop-button:disabled {
+  color: rgb(32 32 29 / 34%);
+  cursor: not-allowed;
+}
+
+.inspector-audio-note.status-playing,
+.audio-status.status-playing {
+  color: var(--music-moss);
+}
+
+.inspector-audio-note.status-unavailable,
+.audio-status.status-unavailable {
+  color: #8a321f;
+}
+
+.piano-dock {
+  grid-column: 2 / 4;
+  min-width: 0;
+  border-top: 1px solid var(--music-line);
+  background: var(--music-paper);
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.piano-dock-toolbar {
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  min-height: 3.4rem;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1.5rem;
+  border-bottom: 1px solid var(--music-line-soft);
+}
+
+.piano-collapse-button {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.55rem;
+  border: 0;
+  color: var(--music-ink);
+  background: transparent;
+  cursor: pointer;
+}
+
+.audio-status,
+.last-played {
+  margin: 0;
+  color: var(--music-muted);
+  font-size: 0.7rem;
+}
+
+.audio-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.audio-status-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+
+.status-playing .audio-status-dot,
+.status-ready .audio-status-dot {
+  background: currentColor;
+}
+
+.keyboard-hint-toggle {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--music-muted);
+  font-size: 0.7rem;
+}
+
+.piano-body {
+  display: grid;
+  grid-template-columns: 2.75rem minmax(0, 1fr) 2.75rem;
+  height: 9.25rem;
+  padding: 0.8rem 1.5rem 1.1rem;
+}
+
+.piano-shift-button {
+  min-width: 0;
+  border: 1px solid var(--music-line);
+  color: var(--music-muted);
+  background: transparent;
+  cursor: pointer;
+}
+
+.piano-shift-button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.piano-keyboard {
+  position: relative;
+  min-width: 0;
+  height: 100%;
+}
+
+.piano-white-keys {
+  display: flex;
+  height: 100%;
+}
+
+.piano-key {
+  cursor: pointer;
+  touch-action: none;
+  transition: translate 80ms ease, box-shadow 80ms ease, filter 80ms ease;
+}
+
+.piano-white-key {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0.45rem 0.1rem;
+  border: 1px solid var(--music-line);
+  border-left: 0;
+  color: var(--music-ink);
+  background: #f9f7f0;
+}
+
+.piano-white-key:first-child {
+  border-left: 1px solid var(--music-line);
+}
+
+.piano-black-keys {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.piano-black-key {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  width: clamp(1rem, 3.1%, 2.2rem);
+  height: 58%;
+  padding: 0.25rem 0;
+  translate: -50% 0;
+  border: 1px solid #12120f;
+  border-radius: 0 0 0.15rem 0.15rem;
+  color: white;
+  background: #1f201e;
+  pointer-events: auto;
+}
+
+.piano-key.is-active {
+  color: white;
+  background: var(--music-signal);
+}
+
+.piano-key.is-held {
+  translate: 0 0.12rem;
+  box-shadow: inset 0 0.2rem 0.35rem rgb(20 21 17 / 18%);
+  filter: brightness(0.9);
+}
+
+.piano-black-key.is-held {
+  translate: -50% 0.12rem;
+}
+
+.piano-role-marker {
+  position: absolute;
+  right: 50%;
+  bottom: 1.8rem;
+  display: grid;
+  width: 1.25rem;
+  height: 1.25rem;
+  translate: 50% 0;
+  place-items: center;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-size: 0.55rem;
+}
+
+.piano-black-key .piano-role-marker {
+  bottom: 0.35rem;
+}
+
+.piano-note-name,
+.piano-key kbd {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: clamp(0.52rem, 0.8vw, 0.72rem);
+  font-variant-numeric: tabular-nums;
+}
+
+.piano-black-key kbd {
+  color: inherit;
+}
+
+.piano-dock.is-collapsed .piano-dock-toolbar {
+  border-bottom: 0;
+}
+
+.piano-dock.is-collapsed .piano-body {
+  display: none;
+}
+
+.free-note-picker {
+  margin-top: 1.6rem;
+}
+
+.free-note-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.free-note-heading button {
+  min-height: 2.75rem;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  color: var(--music-signal-dark);
+  background: transparent;
+}
+
+.pitch-class-grid {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+.pitch-class-grid button {
+  min-height: 3.2rem;
+  font-size: 0.76rem;
+}
+
+.free-note-picker > p {
+  margin: 0.7rem 0 0;
+  color: var(--music-muted);
+  font-size: 0.7rem;
+}
+
+.invalid-lesson {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.invalid-lesson-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.mobile-course-dialog {
+  position: fixed;
+  z-index: 90;
+  inset: 0;
+}
+
+.mobile-course-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  border: 0;
+  background: rgb(32 32 29 / 42%);
+}
+
+.mobile-course-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(27rem, 92vw);
+  overflow-y: auto;
+  border-left: 1px solid var(--music-line);
+  background: var(--music-paper);
+  box-shadow: -1rem 0 3rem rgb(32 32 29 / 18%);
+  animation: music-drawer-in 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.mobile-course-panel-heading {
+  position: sticky;
+  z-index: 2;
+  top: 0;
+  display: flex;
+  min-height: 4.2rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  border-bottom: 1px solid var(--music-line);
+  background: rgb(244 241 234 / 96%);
+}
+
+.mobile-course-panel-heading h2 {
+  margin: 0;
+  font-family: var(--music-display);
+  font-size: 1rem;
+}
+
+.mobile-course-panel-heading button {
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border: 0;
+  background: transparent;
+}
+
+@keyframes music-drawer-in {
+  from { translate: 2rem 0; opacity: 0.75; }
+}
+
+@media (max-width: 1300px) {
+  .music-theory-page {
+    grid-template-columns: 16.5rem minmax(30rem, 1fr) 17.5rem;
+  }
+
+  .lesson-article {
+    padding-inline: 2rem;
+  }
+
+  .lesson-inspector section {
+    padding-inline: 1.35rem;
+  }
+
+  .harmony-deep-dive {
+    gap: 1.4rem;
+  }
+
+  .harmony-chord-list button {
+    grid-template-columns: 1.5rem 2.8rem minmax(2.5rem, 1fr) auto 0.8rem;
+    gap: 0.4rem;
+    padding-inline: 0.65rem;
+  }
+}
+
+@media (max-width: 1100px) {
+  .music-theory-page {
+    display: block;
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+    padding-bottom: 13rem;
+  }
+
+  .music-course-rail {
+    display: none;
+  }
+
+  .music-mobile-header {
+    position: sticky;
+    z-index: 50;
+    top: 0;
+    display: flex;
+    min-height: 4.4rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.55rem 1rem;
+    border-bottom: 1px solid var(--music-line);
+    background: rgb(244 241 234 / 96%);
+  }
+
+  .music-mobile-home,
+  .music-course-open {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    gap: 0.55rem;
+    border: 0;
+    color: var(--music-ink);
+    background: transparent;
+    font-family: var(--music-display);
+    text-decoration: none;
+  }
+
+  .music-mobile-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .music-course-open span {
+    display: none;
+  }
+
+  .music-lesson-region {
+    overflow: visible;
+  }
+
+  .lesson-article {
+    min-height: auto;
+    padding-top: 3rem;
+  }
+
+  .lesson-inspector {
+    max-width: 62rem;
+    margin: 0 auto 3rem;
+    overflow: visible;
+    border-block: 1px solid var(--music-line);
+    border-left: 0;
+  }
+
+  .lesson-inspector {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .lesson-inspector section + section {
+    border-top: 0;
+    border-left: 1px solid var(--music-line);
+  }
+
+  .piano-dock {
+    position: fixed;
+    z-index: 45;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    box-shadow: 0 -0.75rem 2.4rem rgb(32 32 29 / 10%);
+  }
+}
+
+@media (max-width: 700px) {
+  .music-theory-page {
+    padding-bottom: 11rem;
+  }
+
+  .music-mobile-header {
+    align-items: flex-start;
+    padding-block: 0.65rem;
+  }
+
+  .music-mobile-home span {
+    max-width: 8rem;
+    line-height: 1.15;
+  }
+
+  .music-mobile-actions .inline-flex[role="group"] {
+    padding: 0;
+  }
+
+  .music-mobile-actions .inline-flex[role="group"] button {
+    padding-inline: 0.55rem;
+  }
+
+  .lesson-article {
+    padding: 2.5rem 1rem 2rem;
+  }
+
+  .lesson-breadcrumb {
+    margin-bottom: 1rem;
+  }
+
+  .lesson-article h1 {
+    max-width: none;
+    font-size: clamp(2.3rem, 12vw, 3.35rem);
+  }
+
+  .lesson-summary {
+    line-height: 1.75;
+  }
+
+  .theory-controls-grid,
+  .harmony-readout,
+  .lesson-inspector {
+    grid-template-columns: 1fr;
+  }
+
+  .harmony-controls {
+    margin-bottom: 1rem;
+  }
+
+  .harmony-deep-dive {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .harmony-chord-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .harmony-chord-list button {
+    grid-template-columns: 1.35rem 2.2rem minmax(2.25rem, 1fr);
+    min-height: 3.4rem;
+    gap: 0.35rem;
+    padding-inline: 0.55rem;
+  }
+
+  .harmony-chord-list button:nth-child(odd) {
+    border-right: 1px solid var(--music-line-soft);
+  }
+
+  .harmony-chord-list button:last-child {
+    border-right: 0;
+  }
+
+  .harmony-chord-list button small,
+  .harmony-chord-list button svg {
+    display: none;
+  }
+
+  .harmony-focus-card {
+    padding: 1.1rem 1rem 1rem;
+  }
+
+  .chord-staff-notes button {
+    grid-template-columns: minmax(4rem, 1fr) 2.4rem minmax(4.5rem, 0.8fr);
+    gap: 0.5rem;
+  }
+
+  .lesson-inspector {
+    margin-bottom: 1.5rem;
+  }
+
+  .lesson-inspector section {
+    padding: 2rem 1rem;
+  }
+
+  .lesson-inspector section + section {
+    border-top: 1px solid var(--music-line);
+    border-left: 0;
+  }
+
+  .scale-degree-row,
+  .diatonic-chord-row {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .scale-degree-row button,
+  .diatonic-chord-row button {
+    border-bottom: 1px solid var(--music-line-soft);
+  }
+
+  .progression-route {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .note-structure-row {
+    grid-template-columns: repeat(auto-fit, minmax(5rem, 1fr));
+  }
+
+  .lesson-pagination {
+    gap: 0.5rem;
+  }
+
+  .lesson-page-link {
+    align-items: flex-start;
+    font-size: 0.78rem;
+  }
+
+  .piano-dock-toolbar {
+    grid-template-columns: auto 1fr auto;
+    gap: 0.55rem;
+    padding-inline: 0.65rem;
+  }
+
+  .piano-dock-toolbar .last-played {
+    display: none;
+  }
+
+  .keyboard-hint-toggle span,
+  .piano-collapse-button span {
+    display: none;
+  }
+
+  .keyboard-hint-toggle {
+    display: none;
+  }
+
+  .piano-body {
+    grid-template-columns: 2.35rem minmax(0, 1fr) 2.35rem;
+    height: 7rem;
+    padding: 0.55rem 0.5rem 0.75rem;
+  }
+
+  .piano-white-key {
+    padding-bottom: 0.25rem;
+  }
+
+  .piano-black-key {
+    width: 1.65rem;
+  }
+
+  .piano-note-name {
+    font-size: 0.48rem;
+    writing-mode: vertical-rl;
+  }
+
+  .piano-role-marker {
+    bottom: 1.2rem;
+    width: 1rem;
+    height: 1rem;
+    font-size: 0.48rem;
+  }
+
+  .pitch-class-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .music-theory-page *,
+  .music-theory-page *::before,
+  .music-theory-page *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
