@@ -76,3 +76,36 @@ Added project-wide zh-CN/en locale state and language switch, localized the LLM 
 ### Next Steps
 
 - None - task complete
+
+
+## Session 3: Interactive music theory learning
+
+**Date**: 2026-08-31
+**Task**: Interactive music theory learning
+**Branch**: `main`
+
+### Summary
+
+Added the standalone tool homepage and routes, a bilingual freely navigable music-theory curriculum and lab, and a polyphonic Web Audio piano with improved synthesized timbre and regression coverage.
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `a3cb7a1` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
