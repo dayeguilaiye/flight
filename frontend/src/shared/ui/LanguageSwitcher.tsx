@@ -1,9 +1,9 @@
 import { useI18n } from '../i18n/I18nProvider'
 import type { Locale } from '../i18n/locale'
 
-const options: Array<{ locale: Locale; labelKey: 'language.zhCN' | 'language.en' }> = [
-  { locale: 'zh-CN', labelKey: 'language.zhCN' },
-  { locale: 'en', labelKey: 'language.en' },
+const options: Array<{ locale: Locale; label: string }> = [
+  { locale: 'zh-CN', label: '中文' },
+  { locale: 'en', label: 'English' },
 ]
 
 export function LanguageSwitcher() {
@@ -16,11 +16,11 @@ export function LanguageSwitcher() {
           aria-pressed={locale === option.locale}
           className={`rounded-full px-3 py-1.5 text-xs font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal ${locale === option.locale ? 'bg-ink text-paper' : 'text-ink/60 hover:bg-ink/5 hover:text-ink'}`}
           key={option.locale}
-          lang={locale}
+          lang={option.locale}
           onClick={() => setLocale(option.locale)}
           type="button"
         >
-          {t(option.labelKey)}
+          {option.label}
         </button>
       ))}
     </div>
