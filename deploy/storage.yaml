@@ -1,0 +1,12 @@
+# Managed separately from Helm releases so application rollback/uninstall keeps data.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: flight-data
+  namespace: flight
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 2Gi

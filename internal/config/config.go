@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strconv"
 )
 
 // Config contains process-wide runtime configuration.
@@ -12,6 +13,7 @@ type Config struct {
 	AdminPassword  string
 	MasterKey      string
 	HTTPListenAddr string
+	SecureCookies  bool
 }
 
 // Load reads configuration from the environment. Secrets are validated here
@@ -28,11 +30,20 @@ func Load() (Config, error) {
 		listenAddr = ":8080"
 	}
 
+	secureCookies := false
+	if value := os.Getenv("FLIGHT_SECURE_COOKIES"); value != "" {
+		var err error
+		secureCookies, err = strconv.ParseBool(value)
+		if err != nil {
+			return Config{}, fmt.Errorf("FLIGHT_SECURE_COOKIES must be a boolean: %w", err)
+		}
+	}
 	cfg := Config{
 		DataDir:        dataDir,
 		AdminPassword:  os.Getenv("FLIGHT_ADMIN_PASSWORD"),
 		MasterKey:      os.Getenv("FLIGHT_MASTER_KEY"),
 		HTTPListenAddr: listenAddr,
+		SecureCookies:  secureCookies,
 	}
 	if err := cfg.Validate(); err != nil {
 		return Config{}, err

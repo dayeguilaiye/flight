@@ -158,7 +158,7 @@ type providerRequest struct {
 }
 
 func (r providerRequest) input() ProviderInput {
-	return ProviderInput{Name: r.Name, Description: r.Description, BaseURL: r.BaseURL, Token: r.Token}
+	return ProviderInput(r)
 }
 
 type modelRequest struct {
@@ -168,7 +168,7 @@ type modelRequest struct {
 }
 
 func (r modelRequest) input() ModelInput {
-	return ModelInput{Name: r.Name, InterfaceType: r.InterfaceType, MaxConcurrency: r.MaxConcurrency}
+	return ModelInput(r)
 }
 
 func decodeJSON(w http.ResponseWriter, r *http.Request, target any) bool {

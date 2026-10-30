@@ -10,13 +10,19 @@ import (
 
 // Handler exposes the public login/session endpoints for the single owner.
 type Handler struct {
-	manager *SessionManager
-	now     func() time.Time
+	manager       *SessionManager
+	now           func() time.Time
+	secureCookies bool
 }
 
 // NewHandler creates an auth HTTP handler.
 func NewHandler(manager *SessionManager) *Handler {
 	return &Handler{manager: manager, now: time.Now}
+}
+
+// RequireSecureCookies enables HTTPS-only sessions behind a TLS-terminating proxy.
+func (h *Handler) RequireSecureCookies() {
+	h.secureCookies = true
 }
 
 // ServeHTTP handles /api/v1/auth/* routes.
@@ -63,6 +69,6 @@ func (h *Handler) login(w http.ResponseWriter, r *http.Request) {
 		httpapi.WriteError(w, http.StatusUnauthorized, "invalid_credentials", "The credentials are invalid.")
 		return
 	}
-	h.manager.SetOwnerCookieSecure(w, h.now(), r.TLS != nil)
+	h.manager.SetOwnerCookieSecure(w, h.now(), h.secureCookies || r.TLS != nil)
 	httpapi.WriteJSON(w, http.StatusOK, map[string]bool{"authenticated": true})
 }

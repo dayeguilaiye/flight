@@ -1,0 +1,10 @@
+[Unit]
+Description=Back up Flight data and runtime secret
+After=k3s.service
+
+[Service]
+Type=oneshot
+Environment=KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ExecStart=/usr/local/sbin/flight-backup /var/backups/flight
+UMask=0077

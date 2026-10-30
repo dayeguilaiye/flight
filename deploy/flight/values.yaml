@@ -1,0 +1,21 @@
+hostName: www.hitnrun.cn
+image:
+  repository: ghcr.io/dayeguilaiye/flight
+  # Every release selects an immutable digest or a unique bootstrap tag.
+  digest: ""
+  tag: ""
+  pullPolicy: IfNotPresent
+existingSecret: flight-runtime
+existingClaim: flight-data
+ingress:
+  enabled: true
+  apiVersion: traefik.containo.us/v1alpha1
+certificate:
+  enabled: true
+  issuerName: lets-encrypt
+resources:
+  requests:
+    cpu: 20m
+    memory: 64Mi
+  limits:
+    memory: 256Mi

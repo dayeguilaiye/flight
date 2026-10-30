@@ -1,22 +1,25 @@
 import { musicTheoryEn, musicTheoryZhCN } from './musicTheoryResources'
+import { databaseCompareEn, databaseCompareZhCN } from './databaseCompareResources'
 
 export const zhCN = {
-  'document.title': 'Flight · 工具实验场',
+  'document.title': 'Flight · 自学与练习',
   'common.home': '返回 Flight 首页',
   'common.notFoundTitle': '这个页面不存在',
   'common.notFoundBody': '链接可能已经失效，或者地址输入有误。',
-  'common.returnHome': '回到工具首页',
+  'common.returnHome': '回到作品首页',
   'language.label': '切换界面语言',
-  'home.documentTitle': 'Flight · 工具实验场',
+  'home.documentTitle': 'Flight · 自学与练习',
   'home.title': 'Flight',
-  'home.intro': '一组彼此独立的小工具与交互实验。选择一个方向，直接开始使用。',
-  'home.toolsLabel': '可用工具',
+  'home.intro': '这里收集我的自学与练习，把学习中的理解做成可以亲手试一试的小作品。从编程到乐理，边做，边慢慢弄明白。',
+  'home.toolsLabel': '自学练习作品',
+  'home.database.title': 'GORM 与 sqlc',
+  'home.database.description': '改一改列名、零值与筛选条件，看看两种 Go 数据库访问方式各自怎样工作。',
   'home.llm.title': 'LLM API 测试器',
   'home.llm.description': '配置一个模型接口，用一组明确的问题观察它真实支持哪些能力。',
   'home.music.title': '听见乐理',
   'home.music.description': '不用实体钢琴，把音程、音阶、和弦与进行变成能看、能按、能听的实验。',
   'home.openTool': '打开{{name}}',
-  'home.toolsCount': '{{count}} 个工具',
+  'home.toolsCount': '{{count}} 个练习作品',
   'llm.documentTitle': 'LLM API 测试器 · Flight',
   'llm.experiment': 'Flight / 实验 01',
   'llm.title': 'LLM API 测试器',
@@ -119,28 +122,31 @@ export const zhCN = {
   'error.login_failed': '登录失败，请重试。',
   'error.generic': '操作未能完成，请稍后重试。',
   ...musicTheoryZhCN,
+  ...databaseCompareZhCN,
 } as const
 
 export type TranslationKey = keyof typeof zhCN
 export type TranslationParams = Record<string, string | number | boolean>
 
 export const en = {
-  'document.title': 'Flight · Tool Lab',
+  'document.title': 'Flight · Learning by Making',
   'common.home': 'Back to Flight home',
   'common.notFoundTitle': 'This page does not exist',
   'common.notFoundBody': 'The link may be out of date, or the address may be incorrect.',
-  'common.returnHome': 'Return to the tool index',
+  'common.returnHome': 'Return to the project index',
   'language.label': 'Switch interface language',
-  'home.documentTitle': 'Flight · Tool Lab',
+  'home.documentTitle': 'Flight · Learning by Making',
   'home.title': 'Flight',
-  'home.intro': 'A small collection of independent tools and interactive experiments. Pick a direction and start using it.',
-  'home.toolsLabel': 'Available tools',
+  'home.intro': 'A collection of things I make while learning. From programming to music theory, these small, hands-on projects help me turn an idea into something I understand.',
+  'home.toolsLabel': 'Learning projects',
+  'home.database.title': 'GORM and sqlc',
+  'home.database.description': 'Change column names, zero values, and filters to explore two approaches to accessing databases in Go.',
   'home.llm.title': 'LLM API tester',
   'home.llm.description': 'Configure a model endpoint and use focused questions to see what it actually supports.',
   'home.music.title': 'Hear music theory',
   'home.music.description': 'No physical piano required: turn intervals, scales, chords, and progressions into things you can see, press, and hear.',
   'home.openTool': 'Open {{name}}',
-  'home.toolsCount': '{{count}} tools',
+  'home.toolsCount': '{{count}} learning projects',
   'llm.documentTitle': 'LLM API tester · Flight',
   'llm.experiment': 'Flight / experiment 01',
   'llm.title': 'LLM API tester',
@@ -243,6 +249,7 @@ export const en = {
   'error.login_failed': 'Login failed. Try again.',
   'error.generic': 'The operation could not be completed. Try again later.',
   ...musicTheoryEn,
+  ...databaseCompareEn,
 } satisfies Record<TranslationKey, string>
 
 export const resources = { 'zh-CN': zhCN, en }

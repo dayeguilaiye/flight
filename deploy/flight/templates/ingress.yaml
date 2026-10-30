@@ -1,0 +1,40 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: {{ .Values.ingress.apiVersion }}
+kind: IngressRoute
+metadata:
+  name: {{ .Release.Name }}-https
+spec:
+  entryPoints: [websecure]
+  routes:
+    - kind: Rule
+      match: Host(`{{ .Values.hostName }}`)
+      services:
+        - name: {{ .Release.Name }}
+          port: 80
+  tls:
+    secretName: {{ .Release.Name }}-tls
+---
+apiVersion: {{ .Values.ingress.apiVersion }}
+kind: Middleware
+metadata:
+  name: {{ .Release.Name }}-https
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: {{ .Values.ingress.apiVersion }}
+kind: IngressRoute
+metadata:
+  name: {{ .Release.Name }}-http
+spec:
+  entryPoints: [web]
+  routes:
+    - kind: Rule
+      match: Host(`{{ .Values.hostName }}`)
+      middlewares:
+        - name: {{ .Release.Name }}-https
+      services:
+        - name: {{ .Release.Name }}
+          port: 80
+{{- end }}

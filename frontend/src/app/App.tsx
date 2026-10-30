@@ -3,12 +3,14 @@ import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
 import { HomePage } from '../features/home/pages/HomePage'
 import { LlmApiTesterPage } from '../features/llm-api-tester/pages/LlmApiTesterPage'
 import { MusicTheoryPage } from '../features/music-theory/pages/MusicTheoryPage'
+import { DatabaseComparePage } from '../features/database-compare/pages/DatabaseComparePage'
 import { useI18n } from '../shared/i18n/I18nProvider'
 
 export function AppRoutes() {
   return (
     <Routes>
       <Route element={<HomePage />} path="/" />
+      <Route element={<DatabaseComparePage />} path="/gorm-vs-sqlc" />
       <Route element={<LlmApiTesterPage />} path="/llm-api-tester" />
       <Route element={<MusicTheoryPage />} path="/music-theory" />
       <Route element={<MusicTheoryPage />} path="/music-theory/lab" />

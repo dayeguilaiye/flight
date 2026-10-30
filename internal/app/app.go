@@ -47,6 +47,9 @@ func New(ctx context.Context, cfg config.Config, logger *slog.Logger) (*App, err
 	featureHandler := llm.NewHandler(featureService, ownerAuth)
 	runHandler := llm.NewRunHandler(featureService, ownerAuth)
 	authHandler := auth.NewHandler(ownerAuth)
+	if cfg.SecureCookies {
+		authHandler.RequireSecureCookies()
+	}
 	apiMux := http.NewServeMux()
 	apiMux.Handle("/api/v1/auth/", authHandler)
 	apiMux.Handle("/api/v1/llm-api-tester/test-runs", runHandler)
@@ -59,7 +62,7 @@ func New(ctx context.Context, cfg config.Config, logger *slog.Logger) (*App, err
 	return &App{
 		config: cfg,
 		db:     db,
-		server: &http.Server{Addr: cfg.HTTPListenAddr, Handler: handler},
+		server: &http.Server{Addr: cfg.HTTPListenAddr, Handler: handler, ErrorLog: slog.NewLogLogger(logger.Handler(), slog.LevelError)},
 	}, nil
 }
 

@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-Frontend uses pnpm, React and Tailwind CSS. The compiled frontend is embedded into a Go binary. The backend uses Go and SQLite. TypeScript and Vite are the provisional frontend implementation defaults documented by the project; the first frontend scaffold is still pending.
+Frontend uses pnpm, React, TypeScript, Vite and Tailwind CSS. The compiled frontend is embedded into a Go binary. The backend uses Go and SQLite.
 
 ## Users
 
@@ -17,17 +17,20 @@ Frontend uses pnpm, React and Tailwind CSS. The compiled frontend is embedded in
 
 ## Product Purpose
 
-Flight is a personal collection of unrelated experiments, small utilities and interactive pages. Success means a new tool can be added quickly, remain understandable in isolation, and be deployed as part of the same small site.
+Flight showcases personal self-study projects and hands-on exercises. Visitors can explore programming and music theory through independent interactive pages. Success means a learning project is understandable on its own and lets visitors test an idea directly.
 
 ## Positioning
 
-The product is a personal lab rather than a unified SaaS product. Its distinct mechanism is that unrelated tools share a lightweight host, deployment model and visual family without sharing domain logic.
+The product is a personal learning showcase. Independent projects share a lightweight host, deployment model and visual family while owning their domain logic.
 
 ## Operating Context
 
 Development happens locally with a pnpm frontend and a Go backend. Production is a single Go process serving embedded frontend assets and optional feature APIs. Runtime writable data, including SQLite and future durable files, lives below the configurable `FLIGHT_DATA_DIR` so Docker and Kubernetes can mount one volume.
 
 ## Capabilities and Constraints
+
+- The home page presents the GORM/sqlc comparison and music-theory projects.
+- `/gorm-vs-sqlc` offers five browser simulations with editable inputs, SQL previews, reset controls and official references. It uses simplified PostgreSQL examples and supports Chinese and English.
 
 - Features are independent vertical slices and may be frontend-only.
 - A feature that needs a backend owns its API, domain rules and persistence adapter.

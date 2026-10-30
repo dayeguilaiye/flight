@@ -10,11 +10,13 @@ type ToolEntry = {
   descriptionKey: TranslationKey
 }
 
+const icpRegistration = '蜀ICP备20006375号-1'
+
 const tools: ReadonlyArray<ToolEntry> = [
   {
-    path: '/llm-api-tester',
-    titleKey: 'home.llm.title',
-    descriptionKey: 'home.llm.description',
+    path: '/gorm-vs-sqlc',
+    titleKey: 'home.database.title',
+    descriptionKey: 'home.database.description',
   },
   {
     path: '/music-theory',
@@ -70,9 +72,20 @@ export function HomePage() {
           })}
         </nav>
 
-        <footer className="flex justify-between gap-4 py-6 text-xs text-ink/45">
-          <span>flight / {new Date().getFullYear()}</span>
-          <span>{t('home.toolsCount', { count: tools.length })}</span>
+        <footer className="py-6 text-xs text-ink/60">
+          <div className="flex justify-between gap-4">
+            <span>flight / {new Date().getFullYear()}</span>
+            <span>{t('home.toolsCount', { count: tools.length })}</span>
+          </div>
+          <a
+            className="mx-auto mt-4 flex min-h-11 w-fit items-center underline-offset-4 hover:text-ink hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal"
+            href="https://beian.miit.gov.cn/"
+            lang="zh-CN"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            {icpRegistration}
+          </a>
         </footer>
       </div>
     </main>

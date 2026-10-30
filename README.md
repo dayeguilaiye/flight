@@ -1,6 +1,8 @@
 # flight
 
-一个用于承载个人实验、工具和小型网页的玩具站点。
+一个展示自学练习与交互作品的个人网站，收集编程、乐理等学习过程中的实践。
+
+首页展示 GORM 与 sqlc 对照实验和听见乐理。GORM 与 sqlc 页面提供改列名、零值更新、软删除、关联加载和动态筛选五个浏览器交互示例，支持中文和英文。
 
 ## 技术栈
 
@@ -35,4 +37,10 @@ data/
 
 容器部署时将 `FLIGHT_DATA_DIR` 设置为挂载卷路径（例如 `/var/lib/flight`），不需要为 SQLite 文件和其他持久化内容分别挂载卷。
 
-生产构建应使用仓库提供的统一脚本（待前端和 Go 基础骨架落地后实现），确保前端产物先生成，再执行 `go build`。
+Production builds use `bash scripts/build.sh`, which builds the frontend and embeds it in `build/flight`.
+
+## Deployment
+
+The production site is served at <https://www.hitnrun.cn>. GitHub Actions tests changes on pull requests, then builds and deploys an immutable container image when application or deployment changes reach `main`.
+
+See [Deployment and recovery](docs/deployment.md) for server bootstrap, the first GHCR publication, runtime credentials, daily backups and rollback.
