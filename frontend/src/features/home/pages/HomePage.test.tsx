@@ -16,10 +16,11 @@ describe('HomePage', () => {
     )
 
     const links = within(screen.getByRole('navigation', { name: '自学练习作品' })).getAllByRole('link')
-    expect(links).toHaveLength(2)
+    expect(links).toHaveLength(3)
     expect(screen.getByRole('link', { name: '打开GORM 与 sqlc' }).getAttribute('href')).toBe('/gorm-vs-sqlc')
     expect(screen.queryByRole('link', { name: '打开LLM API 测试器' })).toBeNull()
     expect(screen.getByRole('link', { name: '打开听见乐理' }).getAttribute('href')).toBe('/music-theory')
+    expect(screen.getByRole('link', { name: '打开像素健身房' }).getAttribute('href')).toBe('/fitness')
     expect(document.body.textContent).not.toContain('即将')
   })
 })
