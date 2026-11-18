@@ -109,3 +109,36 @@ Added the standalone tool homepage and routes, a bilingual freely navigable musi
 ### Next Steps
 
 - None - task complete
+
+
+## Session 4: Pixel fitness log
+
+**Date**: 2026-11-18
+**Task**: Pixel fitness log
+**Branch**: `feat-fitness-log`
+
+### Summary
+
+Added the owner-only /fitness pixel fitness log: coin ledger, snack shop, inventory, and flower training field
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `13d892d` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

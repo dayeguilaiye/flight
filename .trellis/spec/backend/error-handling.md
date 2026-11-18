@@ -106,6 +106,14 @@ Frontend decodes this object once at its API boundary, stores code/metadata, and
 | Invalid concurrency | 400 | `max_concurrency_invalid` | `maxConcurrency`, `{ "min": 1 }` |
 | Guest request exceeds limits | 400 | `guest_request_limit_exceeded` | `targets` |
 | Execution fails after SSE starts | stream stays 200 | `test_run_failed` | structured SSE error event |
+| Fitness duration outside 1–720 min | 400 | `workout_duration_invalid` | `durationMinutes`, `{ "min": 1, "max": 720 }` |
+| Fitness end time not RFC 3339 | 400 | `workout_end_invalid` | `endedAt` |
+| Fitness end time in the future | 400 | `workout_end_in_future` | `endedAt` |
+| Fitness note too long | 400 | `workout_note_too_long` | `note`, `{ "max": 500 }` |
+| Unknown fitness reward | 400 | `reward_kind_unknown` | `kind` |
+| Coin balance below reward cost | 409 | `coins_insufficient` | none |
+| Workout deletion would overdraw coins | 409 | `workout_delete_would_overdraw` | none |
+| Reward already eaten | 409 | `item_already_eaten` | none |
 | Unexpected internal failure | 500 | `internal_error` | optional `requestId` only |
 
 Add a row and matching frontend translations when a new condition needs distinct user recovery. Reuse a code only when status, recovery and safe presentation are genuinely the same.

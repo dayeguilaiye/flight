@@ -15,7 +15,7 @@ import json, sys
 with open(sys.argv[1]) as source:
     assert json.load(source)['status'] == 'ok', 'Unhealthy API'
 PY
-for path in / /music-theory /music-theory/lab /gorm-vs-sqlc /llm-api-tester; do
+for path in / /music-theory /music-theory/lab /gorm-vs-sqlc /llm-api-tester /fitness; do
   status="$(curl "${curl_options[@]}" --silent --show-error --connect-timeout 10 --max-time 30 \
     --output "$tmp/page.html" --write-out '%{http_code}' "$base$path")"
   test "$status" = 200

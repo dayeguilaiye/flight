@@ -31,6 +31,7 @@ Development happens locally with a pnpm frontend and a Go backend. Production is
 
 - The home page presents the GORM/sqlc comparison and music-theory projects.
 - `/gorm-vs-sqlc` offers five browser simulations with editable inputs, SQL previews, reset controls and official references. It uses simplified PostgreSQL examples and supports Chinese and English.
+- `/fitness` is the owner-only pixel-style fitness log: workouts earn one coin per accumulated 30 minutes, coins buy ice cream (5) or grilled sausage (7), and eaten rewards stay greyed out in the inventory. It is not listed on the home page.
 
 - Features are independent vertical slices and may be frontend-only.
 - A feature that needs a backend owns its API, domain rules and persistence adapter.
