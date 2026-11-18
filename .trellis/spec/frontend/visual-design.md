@@ -144,6 +144,18 @@ Do not lower opacity on already-muted small text without checking the composited
 
 Shared providers and focus/contrast rules remain application-wide; visual framing does not.
 
+## Feature-owned Expressive Treatments
+
+### Convention: Scoped game-like styling with vendored display fonts
+
+**What**: A feature may adopt a strong expressive treatment (for example the `/fitness` pixel-game look) when the owner asks for it. Keep its palette, borders and keyframes in one feature stylesheet under a single root class (`.fit`), and draw small artwork in code (pixel maps rendered as `shape-rendering="crispEdges"` SVG) instead of shipping bitmaps.
+
+**Why**: The treatment explains the feature (earn, collect, eat) without leaking into other surfaces, and code-drawn sprites stay crisp at any scale and are testable (rectangular rows, palette coverage).
+
+- Vendor a display font as the feature's own `woff2` files plus its licence under `src/features/<feature>/assets/fonts/`; do not add an npm font package just for one feature. In this repo `pnpm add` re-resolves the `latest` specifiers in `package.json`, which silently bumps unrelated majors in the lockfile.
+- Pixel faces are illegible for small digits and letters (Pixelify Sans `5` reads as `S`, `C` as `O` below ~16px). Use them only for headings, large numbers and primary buttons; keep body copy, hints and small buttons in the body face.
+- Anchor popovers so they cannot overflow a 375px viewport; prefer an in-flow action bar for interactive prompts inside dense grids, and keep `role="tooltip"` content non-interactive.
+
 ## Review Checklist
 
 - [ ] The surface mode and visual variables are declared.

@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/ziyuanhe/flight/internal/config"
+	"github.com/ziyuanhe/flight/internal/features/fitness"
 	llm "github.com/ziyuanhe/flight/internal/features/llm_api_tester"
 	"github.com/ziyuanhe/flight/internal/features/llm_api_tester/protocol"
 	"github.com/ziyuanhe/flight/internal/httpapi"
@@ -31,7 +32,7 @@ func New(ctx context.Context, cfg config.Config, logger *slog.Logger) (*App, err
 	if err != nil {
 		return nil, err
 	}
-	if err := database.ApplyMigrations(ctx, db, llm.Migrations()); err != nil {
+	if err := database.ApplyMigrations(ctx, db, append(llm.Migrations(), fitness.Migrations()...)); err != nil {
 		_ = db.Close()
 		return nil, fmt.Errorf("apply migrations: %w", err)
 	}
@@ -46,6 +47,7 @@ func New(ctx context.Context, cfg config.Config, logger *slog.Logger) (*App, err
 	featureService.SetAdapters(protocol.NewRegistry())
 	featureHandler := llm.NewHandler(featureService, ownerAuth)
 	runHandler := llm.NewRunHandler(featureService, ownerAuth)
+	fitnessHandler := fitness.NewHandler(fitness.NewService(fitness.NewSQLiteRepository(db)), ownerAuth)
 	authHandler := auth.NewHandler(ownerAuth)
 	if cfg.SecureCookies {
 		authHandler.RequireSecureCookies()
@@ -54,6 +56,7 @@ func New(ctx context.Context, cfg config.Config, logger *slog.Logger) (*App, err
 	apiMux.Handle("/api/v1/auth/", authHandler)
 	apiMux.Handle("/api/v1/llm-api-tester/test-runs", runHandler)
 	apiMux.Handle("/api/v1/llm-api-tester/", featureHandler)
+	apiMux.Handle("/api/v1/fitness/", fitnessHandler)
 
 	if logger == nil {
 		logger = slog.Default()

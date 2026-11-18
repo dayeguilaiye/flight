@@ -32,6 +32,16 @@ const errorKeys: Record<string, TranslationKey> = {
   selected_model_missing: 'error.selected_model_missing',
   configuration_failed: 'error.configuration_failed',
   login_failed: 'error.login_failed',
+  workout_duration_invalid: 'error.workout_duration_invalid',
+  workout_end_invalid: 'error.workout_end_invalid',
+  workout_end_in_future: 'error.workout_end_in_future',
+  workout_note_too_long: 'error.workout_note_too_long',
+  reward_kind_unknown: 'error.reward_kind_unknown',
+  coins_insufficient: 'error.coins_insufficient',
+  workout_delete_would_overdraw: 'error.workout_delete_would_overdraw',
+  item_already_eaten: 'error.item_already_eaten',
+  fitness_load_failed: 'error.fitness_load_failed',
+  fitness_action_failed: 'error.fitness_action_failed',
 }
 
 export function translateDisplayError(

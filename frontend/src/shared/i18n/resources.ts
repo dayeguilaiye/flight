@@ -1,5 +1,6 @@
 import { musicTheoryEn, musicTheoryZhCN } from './musicTheoryResources'
 import { databaseCompareEn, databaseCompareZhCN } from './databaseCompareResources'
+import { fitnessEn, fitnessZhCN } from './fitnessResources'
 
 export const zhCN = {
   'document.title': 'Flight · 自学与练习',
@@ -123,6 +124,7 @@ export const zhCN = {
   'error.generic': '操作未能完成，请稍后重试。',
   ...musicTheoryZhCN,
   ...databaseCompareZhCN,
+  ...fitnessZhCN,
 } as const
 
 export type TranslationKey = keyof typeof zhCN
@@ -250,6 +252,7 @@ export const en = {
   'error.generic': 'The operation could not be completed. Try again later.',
   ...musicTheoryEn,
   ...databaseCompareEn,
+  ...fitnessEn,
 } satisfies Record<TranslationKey, string>
 
 export const resources = { 'zh-CN': zhCN, en }

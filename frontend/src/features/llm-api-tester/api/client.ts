@@ -60,18 +60,7 @@ async function requestJSON<T>(input: RequestInfo, init: RequestInit, schema: z.Z
   return schema.parse(payload)
 }
 
-export async function getSession(): Promise<boolean> {
-  const payload = await requestJSON('/api/v1/auth/session', { method: 'GET' }, z.object({ authenticated: z.boolean() }))
-  return payload.authenticated
-}
-
-export async function login(password: string): Promise<void> {
-  await requestJSON('/api/v1/auth/login', { method: 'POST', body: JSON.stringify({ password }) }, z.object({ authenticated: z.literal(true) }))
-}
-
-export async function logout(): Promise<void> {
-  await requestJSON('/api/v1/auth/logout', { method: 'POST', body: '{}' }, z.object({ authenticated: z.literal(false) }))
-}
+export { getSession, login, logout } from '../../../shared/api/auth'
 
 export async function listProviders(): Promise<Provider[]> {
   return providersSchema.parse(await requestJSON('/api/v1/llm-api-tester/providers', { method: 'GET' }, providersSchema)).providers
