@@ -23,6 +23,11 @@ const tools: ReadonlyArray<ToolEntry> = [
     titleKey: 'home.music.title',
     descriptionKey: 'home.music.description',
   },
+  {
+    path: '/fitness',
+    titleKey: 'home.fitness.title',
+    descriptionKey: 'home.fitness.description',
+  },
 ]
 
 function ArrowIcon() {
