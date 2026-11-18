@@ -150,7 +150,7 @@ export const en = {
   'home.music.title': 'Hear music theory',
   'home.music.description': 'No physical piano required: turn intervals, scales, chords, and progressions into things you can see, press, and hear.',
   'home.fitness.title': 'Pixel Gym',
-  'home.fitness.description': 'My private fitness log: every workout earns coins for ice cream and grilled sausage, and flowers bloom in the training field.',
+  'home.fitness.description': 'My private fitness log: every workout earns coins for snacks and grows a flower.',
   'home.openTool': 'Open {{name}}',
   'home.toolsCount': '{{count}} learning projects',
   'llm.documentTitle': 'LLM API tester · Flight',
